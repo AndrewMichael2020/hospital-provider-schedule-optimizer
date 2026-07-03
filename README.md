@@ -352,3 +352,335 @@ A conservative business case should replace the synthetic values with local Fina
 - Forecasts should be monitored for drift and flat prediction behavior.
 - Recommendations should be reviewed against local collective agreements, credentialing rules, fatigue rules, site policies, and provider availability.
 - Production use should start in advisory shadow mode before active scheduling.
+
+## 15. Implementation pathway: dashboard, CSV, and future integration
+
+The recommended first deployment is **dashboard plus CSV**, not direct schedule write-back. This gives provider schedulers and ER operations leaders practical recommendations while keeping the workflow safe, auditable, and easy to reverse.
+
+### Recommended first operating model
+
+Use two outputs in parallel:
+
+| Output | Primary audience | Purpose |
+| --- | --- | --- |
+| Dashboard | ER operations leaders, staffing office leads, medical/nursing leadership | Review pressure, recommendations, role-specific gaps, budget use, and outcomes |
+| CSV/worklist | Provider schedulers, staffing clerks, charge/support roles | Act on recommendations in existing scheduling workflows |
+
+The dashboard explains the recommendation. The CSV makes it actionable.
+
+### Why not direct write-back first
+
+Direct write-back into scheduling systems should come later. Early write-back creates avoidable risk:
+
+- local scheduling systems may be the source of truth for different roles;
+- physician, NP, RN, and HCW schedules may live in different tools;
+- fatigue, union, credentialing, and local availability rules may not be fully represented at first;
+- a recommendation may be clinically reasonable but operationally impossible;
+- schedulers need a period of trust-building before automation changes live schedules.
+
+For the first production-style pilot, the optimizer should recommend; humans should decide.
+
+## 16. CSV implementation package
+
+A practical deployment should generate a small set of stable CSV files every day. These can be delivered by SFTP, secure shared folder, SharePoint, dashboard download, or data warehouse table export.
+
+### 16.1 Scheduler action CSV
+
+File:
+`recommended_overflow_actions.csv`
+
+Purpose: the scheduler's main action list.
+
+Recommended columns:
+
+| Column | Meaning |
+| --- | --- |
+| `recommendation_id` | Stable unique recommendation ID |
+| `run_id` | Optimizer run that created the recommendation |
+| `scenario_name` | Forecast scenario, such as `tabfm_guarded` or `conservative_peak` |
+| `facility_id` | Site/facility |
+| `department_id` | Department or unit, such as `ER_MAIN` |
+| `role` | `MD`, `NP`, `RN`, or `HCW` |
+| `recommended_start` | Recommended shift start |
+| `recommended_end` | Recommended shift end |
+| `duration_hours` | Recommended duration, usually 10 hours |
+| `priority_tier` | `P1`, `P2`, or `P3` |
+| `priority_score` | Numeric ranking score |
+| `reason` | Plain-language explanation of the recommendation |
+| `expected_shortage_reduction_hours` | Expected role-hours covered |
+| `expected_coverage_risk_reduction` | Expected reduction in coverage-risk hours |
+| `role_budget_hours` | Funded overflow budget for the role |
+| `role_budget_used_after` | Budget used if recommendation is accepted |
+| `role_budget_remaining_after` | Remaining role budget after recommendation |
+| `candidate_provider_id` | Optional if provider-specific recommendation is available |
+| `scheduler_status` | `pending`, `accepted`, `rejected`, or `modified` |
+| `scheduler_comment` | Optional human note |
+
+Minimum rule: every row must have a stable `recommendation_id`, role, facility, start, end, and priority.
+
+### 16.2 Remaining capacity-needed CSV
+
+File:
+`recommended_overflow_capacity_needed_by_hour.csv`
+
+Purpose: show unresolved demand after optimization.
+
+Recommended columns:
+
+| Column | Meaning |
+| --- | --- |
+| `facility_id` | Site/facility |
+| `timestamp_hour` | Hour of remaining pressure |
+| `department_id` | Unit/department |
+| `actual_required_md` | Realized or simulated MD need |
+| `actual_required_np` | Realized or simulated NP need |
+| `actual_required_rn` | Realized or simulated RN need |
+| `actual_required_hcw` | Realized or simulated HCW need |
+| `core_md_coverage` | Fixed MD coverage |
+| `core_np_coverage` | Fixed NP coverage |
+| `core_rn_coverage` | Fixed RN coverage |
+| `core_hcw_coverage` | Fixed HCW coverage |
+| `optimized_overflow_md_coverage` | Optimized MD overflow coverage |
+| `optimized_overflow_np_coverage` | Optimized NP overflow coverage |
+| `optimized_overflow_rn_coverage` | Optimized RN overflow coverage |
+| `optimized_overflow_hcw_coverage` | Optimized HCW overflow coverage |
+| `remaining_md_gap` | Remaining MD gap |
+| `remaining_np_gap` | Remaining NP gap |
+| `remaining_rn_gap` | Remaining RN gap |
+| `remaining_hcw_gap` | Remaining HCW gap |
+| `priority_tier` | Remaining-gap priority |
+| `scenario_name` | Forecast scenario |
+
+This table is important for leadership. It shows what the funded overflow bank could not solve.
+
+### 16.3 Scheduler decision audit CSV
+
+File:
+`scheduler_decision_audit.csv`
+
+Purpose: track whether recommendations were reviewed, accepted, modified, or rejected.
+
+Recommended columns:
+
+| Column | Meaning |
+| --- | --- |
+| `recommendation_id` | Links to `recommended_overflow_actions.csv` |
+| `run_id` | Optimizer run ID |
+| `reviewed_at` | Timestamp of scheduler review |
+| `reviewed_by_role` | Staffing clerk, charge nurse, medical lead, etc. |
+| `scheduler_status` | `pending`, `accepted`, `rejected`, or `modified` |
+| `final_role` | Role after human review |
+| `final_facility_id` | Facility after human review |
+| `final_start` | Final approved start time |
+| `final_end` | Final approved end time |
+| `rejection_reason` | Reason if rejected |
+| `modification_reason` | Reason if modified |
+| `scheduler_comment` | Human-readable comment |
+
+Recommended rejection reasons:
+
+- `provider_unavailable`
+- `already_covered`
+- `clinical_need_changed`
+- `too_late_to_call`
+- `contract_or_fatigue_rule`
+- `budget_or_bank_policy`
+- `wrong_role_or_site`
+- `scheduler_disagreed`
+- `other`
+
+These reasons are not administrative noise. They are model-improvement data.
+
+### 16.4 Actual deployment reconciliation CSV
+
+File:
+`actual_deployment_reconciliation.csv`
+
+Purpose: determine whether an accepted recommendation actually happened.
+
+Recommended columns:
+
+| Column | Meaning |
+| --- | --- |
+| `recommendation_id` | Links back to recommendation |
+| `scheduled_shift_id` | Shift created or selected by scheduler |
+| `actual_worked_shift_id` | Payroll/timekeeping worked-shift ID |
+| `scheduled_provider_id` | Provider scheduled |
+| `actual_provider_id` | Provider who actually worked |
+| `scheduled_start` | Final scheduled start |
+| `scheduled_end` | Final scheduled end |
+| `actual_clock_in` | Timekeeping start |
+| `actual_clock_out` | Timekeeping end |
+| `deployment_status` | `worked`, `partial`, `cancelled`, `no_show`, or `replaced` |
+| `actual_hours_worked` | Actual worked hours |
+| `variance_minutes` | Timing difference from recommendation |
+
+This table closes the loop between recommendation, scheduling decision, and actual worked hours.
+
+## 17. Dashboard implementation
+
+The first dashboard should be operational, not decorative. It should help leaders and schedulers answer: what should we do today, why, and did it work?
+
+Recommended dashboard tabs:
+
+| Tab | Purpose |
+| --- | --- |
+| Executive summary | Show shortage reduction, coverage-risk reduction, budget use, and rollout readiness |
+| Scheduler worklist | Filterable recommendations by facility, role, time, and priority |
+| Role view | MD, NP, RN, and HCW demand, gaps, and overflow use |
+| Facility view | Site-level pressure and recommendations |
+| Timeline view | Hour-by-hour forecast pressure and planned overflow |
+| Remaining gaps | Uncovered capacity after optimization |
+| Adoption funnel | Generated -> reviewed -> accepted/modified -> worked |
+| Rejection reasons | Why recommendations were not implemented |
+| Outcome audit | Compare implemented vs not implemented recommendations |
+
+### Dashboard metrics
+
+Recommended top-level KPIs:
+
+| Metric | Meaning |
+| --- | --- |
+| `recommendations_generated` | Count of optimizer recommendations |
+| `recommendations_reviewed` | Count reviewed by schedulers |
+| `recommendations_accepted` | Count accepted as-is |
+| `recommendations_modified` | Count modified by humans |
+| `recommendations_rejected` | Count rejected |
+| `recommendations_worked` | Count that actually resulted in worked shifts |
+| `shortage_hours_reduced` | Estimated or realized shortage reduction |
+| `coverage_risk_hours_reduced` | Estimated or realized reduction in coverage-risk hours |
+| `overflow_budget_used_by_role` | Percent of each funded role bank used |
+| `remaining_gap_hours_by_role` | Uncovered demand after optimization |
+
+### Adoption funnel
+
+The adoption funnel is the most important dashboard feature after the scheduler worklist.
+
+```text
+recommendation generated
+        -> reviewed by scheduler
+        -> accepted / modified / rejected
+        -> scheduled
+        -> actually worked
+        -> outcome measured
+```
+
+Example metrics:
+
+| Metric | Formula |
+| --- | --- |
+| Review rate | reviewed / generated |
+| Acceptance rate | accepted / reviewed |
+| Modification rate | modified / reviewed |
+| Rejection rate | rejected / reviewed |
+| Implementation rate | worked / accepted_or_modified |
+| End-to-end adoption | worked / generated |
+| Timing accuracy | worked within recommended window / worked |
+
+Without this funnel, the team only knows what the optimizer recommended. With it, the team knows whether the recommendation was operationally adopted.
+
+## 18. Maturity model
+
+Use a staged maturity model. Do not jump directly to automated schedule writes.
+
+| Level | Name | Output | Human role | Integration risk |
+| --- | --- | --- | --- | --- |
+| 0 | Offline analysis | Reports only | Analytics review | Very low |
+| 1 | CSV shadow mode | Daily CSV recommendations | Scheduler compares manually | Low |
+| 2 | Dashboard + CSV | Dashboard and action CSV | Scheduler reviews and records decisions | Low-moderate |
+| 3 | Scheduler worklist | Review queue with accept/reject/modify | Scheduler actively manages recommendations | Moderate |
+| 4 | Proposed schedule write-back | Pre-filled proposed shifts requiring approval | Scheduler approves before posting | Higher |
+| 5 | Controlled direct write-back | Idempotent API updates to scheduling system | Human exception management | Highest |
+
+Recommended pilot target: **Level 2**.
+
+Recommended production target after trust is established: **Level 3 or Level 4**.
+
+Only pursue Level 5 after governance, audit, rollback, identity matching, and idempotency controls are proven.
+
+## 19. Look forward: idempotent integration
+
+If the system eventually writes proposed shifts or tasks into another scheduling system, integration must be idempotent. This means the same optimizer run can be safely replayed without creating duplicate shifts, duplicate tasks, or conflicting records.
+
+### Required identifiers
+
+Every recommendation should include stable keys:
+
+| Field | Purpose |
+| --- | --- |
+| `run_id` | Unique optimizer run |
+| `recommendation_id` | Unique recommendation across runs |
+| `source_system` | `hospital_schedule_optimizer` |
+| `source_version` | Code/model/config version |
+| `scenario_name` | Forecast scenario used |
+| `facility_id` | Site |
+| `role` | Workforce role |
+| `recommended_start` | Recommendation start |
+| `recommended_end` | Recommendation end |
+| `idempotency_key` | Stable key for external write-back |
+
+Recommended idempotency key pattern:
+
+```text
+hospital_schedule_optimizer::{run_date}::{scenario_name}::{facility_id}::{role}::{recommended_start_iso}::{recommended_end_iso}
+```
+
+For provider-specific recommendations, include `candidate_provider_id` in the key.
+
+### Idempotent write behavior
+
+When integrating with a scheduling system or worklist:
+
+1. Check whether `idempotency_key` already exists.
+2. If it exists and content is unchanged, do nothing.
+3. If it exists and content changed, create a new version or update only allowed fields.
+4. If it does not exist, create a new proposed task/shift.
+5. Never create two active records with the same idempotency key.
+6. Store external IDs returned by the target system.
+7. Preserve a full audit trail of create/update/cancel actions.
+
+### Recommended write-back statuses
+
+Use advisory statuses before live schedule mutation:
+
+| Status | Meaning |
+| --- | --- |
+| `proposed` | Optimizer created recommendation |
+| `under_review` | Scheduler opened or claimed it |
+| `accepted` | Scheduler accepted recommendation |
+| `modified` | Scheduler changed it |
+| `rejected` | Scheduler rejected it |
+| `posted_to_schedule` | Recommendation became a scheduled shift |
+| `worked` | Shift was confirmed by actual worked hours |
+| `cancelled` | Shift was cancelled |
+
+### Rollback and safety
+
+Any future write-back integration should support:
+
+- dry-run mode;
+- shadow mode;
+- single-facility pilot mode;
+- role-by-role enablement;
+- maximum number of recommendations per day;
+- budget cap enforcement before write;
+- manual approval before posting;
+- immutable audit logs;
+- safe cancellation or supersession of prior recommendations.
+
+The safest near-term architecture is to write to an intermediate worklist, not directly to the scheduling source of truth.
+
+## 20. Practical integration recommendation
+
+For a Fraser-like deployment, the recommended sequence is:
+
+1. Start with historical data extracts from EHR/ED operations, scheduling, and timekeeping.
+2. Run daily shadow-mode optimizer jobs.
+3. Produce dashboard plus CSV outputs.
+4. Ask schedulers to record accept/reject/modify decisions.
+5. Reconcile accepted recommendations against actual worked hours.
+6. Review weekly adoption and outcome metrics.
+7. Move to a scheduler worklist only after the CSV process is trusted.
+8. Consider idempotent write-back only after governance approval and system-specific integration design.
+
+This keeps the first implementation practical while preserving a clear path toward deeper integration later.
