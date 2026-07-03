@@ -672,7 +672,7 @@ The safest near-term architecture is to write to an intermediate worklist, not d
 
 ## 20. Practical integration recommendation
 
-For a Fraser-like deployment, the recommended sequence is:
+For a Health Authority-wide or provincial Canadian deployment, the recommended sequence is:
 
 1. Start with historical data extracts from EHR/ED operations, scheduling, and timekeeping.
 2. Run daily shadow-mode optimizer jobs.
