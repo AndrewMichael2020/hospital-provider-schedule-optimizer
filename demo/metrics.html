@@ -71,6 +71,48 @@
           </article>
         </div>
       </section>
+
+      <section class="card metric-guide">
+        <div class="card__head">
+          <div>
+            <p class="eyebrow">Method</p>
+            <h2>How the optimizer avoids overflow gaps</h2>
+          </div>
+        </div>
+        <div class="method-stack">
+          <article>
+            <strong>1. Start with protected rotations</strong>
+            <p>The engine expands the fixed MD, NP, RN, and HCW rotations into hourly role coverage by facility. These core shifts are treated as locked; the optimizer does not move or cancel them.</p>
+          </article>
+          <article>
+            <strong>2. Simulate role-specific demand</strong>
+            <p>The synthetic demand engine creates hourly required staffing by role. Normal demand sits below core coverage with slack. Moderate and surge scenarios add facility, evening, weekend, flu, heatwave, and ambulance-arrival pressure.</p>
+          </article>
+          <article>
+            <strong>3. Measure the original gap</strong>
+            <p>For each facility-hour and role, the engine computes the uncovered gap before optimized overflow.</p>
+            <code class="formula">gap = max(required role coverage - protected core coverage, 0)</code>
+          </article>
+          <article>
+            <strong>4. Compare against original overflow</strong>
+            <p>The original baseline mimics threshold-triggered call-outs. It can react to waiting-room or surge signals, but may be early, late, unavailable, or aimed at the wrong role or site.</p>
+          </article>
+          <article>
+            <strong>5. Score candidate overflow shifts</strong>
+            <p>Every available overflow shift is scored by how many uncovered role-hours it can cover, weighted by operational impact. MD, NP, RN, and HCW are scored separately so one role's bank does not silently solve another role's shortage.</p>
+            <code class="formula">score = covered role gap hours * role weight + pressure priority</code>
+          </article>
+          <article>
+            <strong>6. Select the best feasible plan</strong>
+            <p>The optimizer uses a greedy constrained selection: take the highest-value overflow shift that still covers enough gap hours, stays inside each role's funded bank, and does not double-book the same provider-hour.</p>
+          </article>
+          <article>
+            <strong>7. Recompute what remains</strong>
+            <p>After selected overflow is applied, the engine recomputes remaining uncovered role-hours and facility-hours with any post-optimization gap. Avoided shortage is the difference between original and optimized shortage.</p>
+            <code class="formula">avoided shortage = original overflow shortage - optimized overflow shortage</code>
+          </article>
+        </div>
+      </section>
     </main>
 
     <footer>
