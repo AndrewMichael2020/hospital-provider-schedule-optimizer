@@ -12,6 +12,8 @@
 
 <p align="center"><strong>Safety-first ER workforce optimization with fixed rotations, role-specific demand, and funded overflow guardrails.</strong></p>
 
+<p align="center" style="color: #d1242f;"><strong>Live demo: <a href="https://andrewmichael2020.github.io/hospital-provider-schedule-optimizer/">Hospital Schedule Optimizer scheduling console</a></strong></p>
+
 A synthetic evaluation harness and prototype for a **Hospital Schedule Optimizer**: a safety-first scheduling system that forecasts ER demand, preserves fixed workforce rotations, and recommends targeted overflow/on-call deployments.
 
 Project path:
