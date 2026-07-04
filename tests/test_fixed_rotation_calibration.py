@@ -43,12 +43,15 @@ def test_pressure_regimes_increase_overflow_need_monotonically(tmp_path: Path) -
     moderate_meta, moderate = _run_case(tmp_path, 1.25)
     surge_meta, surge = _run_case(tmp_path, 1.35)
     severe_meta, severe = _run_case(tmp_path, 1.60)
+    extreme_meta, extreme = _run_case(tmp_path, 2.00)
 
     assert normal_meta["pre_overflow_gap_hours"] == 0.0
     assert 0.0 < moderate_meta["pre_overflow_gap_hours"] < 700.0
     assert surge_meta["pre_overflow_gap_hours"] > moderate_meta["pre_overflow_gap_hours"] * 3
     assert severe_meta["pre_overflow_gap_hours"] > surge_meta["pre_overflow_gap_hours"]
+    assert extreme_meta["pre_overflow_gap_hours"] >= severe_meta["pre_overflow_gap_hours"]
     assert normal["total_optimized_overflow_hours_used"] == 0.0
     assert 0.0 < moderate["total_optimized_overflow_hours_used"] < surge["total_optimized_overflow_hours_used"]
     assert surge["total_optimized_overflow_hours_used"] <= surge["total_overflow_budget_hours"]
     assert surge["total_optimized_overflow_hours_used"] <= severe["total_optimized_overflow_hours_used"] <= severe["total_overflow_budget_hours"]
+    assert severe["total_optimized_overflow_hours_used"] <= extreme["total_optimized_overflow_hours_used"] <= extreme["total_overflow_budget_hours"]

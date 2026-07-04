@@ -33,12 +33,12 @@
         <div class="control-grid">
           <label>
             <span>Overflow budget</span>
-            <input id="budget-control" type="range" min="5" max="15" step="1" value="10">
-            <b id="budget-value">10%</b>
+            <input id="budget-control" type="range" min="0" max="20" step="1" value="0">
+            <b id="budget-value">0%</b>
           </label>
           <label>
             <span>Demand pressure</span>
-            <input id="pressure-control" type="range" min="100" max="160" step="5" value="135">
+            <input id="pressure-control" type="range" min="100" max="200" step="5" value="135">
             <b id="pressure-value">1.35x</b>
           </label>
           <label>
@@ -90,8 +90,8 @@
       <section class="card span-5" aria-labelledby="gaps-heading">
         <div class="card__head">
           <div>
-            <p class="eyebrow">Remaining pressure</p>
-            <h2 id="gaps-heading">Uncovered role gaps after optimization, 30-day total</h2>
+            <p class="eyebrow">Uncovered demand</p>
+            <h2 id="gaps-heading">Role gaps left after optimization, 30-day total</h2>
           </div>
         </div>
         <div id="gaps-chart" class="gap-grid gap-grid--compact"></div>

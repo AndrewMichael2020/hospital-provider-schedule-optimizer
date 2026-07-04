@@ -1,5 +1,7 @@
 const fmt = new Intl.NumberFormat("en-US", { maximumFractionDigits: 1 });
+const whole = new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 });
 const pct = new Intl.NumberFormat("en-US", { maximumFractionDigits: 1, style: "percent" });
+const BUDGET_STOPS = [0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 100];
 
 let demoData = null;
 let runCount = 0;
@@ -81,7 +83,7 @@ function pressureSample(data, multiplier) {
 
 function getParams() {
   return {
-    budgetPct: numberValue("budget-control"),
+    budgetPct: BUDGET_STOPS[numberValue("budget-control")] ?? 0,
     pressure: numberValue("pressure-control"),
     minGap: numberValue("gap-control"),
     shiftHours: numberValue("shift-control"),
@@ -90,7 +92,7 @@ function getParams() {
 
 function updateControlLabels() {
   const p = getParams();
-  byId("budget-value").textContent = `${p.budgetPct}%`;
+  byId("budget-value").textContent = p.budgetPct === 100 ? "Max" : `${p.budgetPct}%`;
   byId("pressure-value").textContent = `${(p.pressure / 100).toFixed(2)}x`;
   byId("gap-value").textContent = `${p.minGap}h`;
   byId("shift-value").textContent = `${p.shiftHours}h`;
@@ -103,32 +105,31 @@ function simulateScenario(data, params) {
   const selectivityFactor = Math.max(0.68, Math.min(1.18, Math.sqrt(base.minimumCoveredGapHours / params.minGap)));
   const shiftFactor = params.shiftHours / base.overflowShiftHours;
   const shiftCoverageFactor = Math.max(0.72, Math.min(1.12, Math.sqrt(shiftFactor)));
-  const coverageFactor = Math.max(0.35, Math.min(1.35, Math.pow(budgetFactor, 0.72) * selectivityFactor * shiftCoverageFactor));
   const manualShortage = sample.kpis.manualShortage;
-  const shortageAvoided = Math.min(manualShortage, Math.max(0, sample.kpis.shortageAvoided * coverageFactor));
-  const riskAvoided = Math.min(sample.kpis.manualCoverageRisk || 0, Math.max(0, sample.kpis.coverageRiskAvoided * coverageFactor));
   const budgetHours = sample.kpis.budgetHours * budgetFactor;
   const calloutFactor = Math.max(0.72, Math.min(1.22, Math.sqrt(base.minimumCoveredGapHours / params.minGap)));
   const shiftUseFactor = Math.max(0.86, Math.min(1.12, 0.92 + 0.08 * shiftFactor));
-  const neededHours = sample.kpis.usedHours * calloutFactor * shiftUseFactor;
+  const remainingGapBase = (sample.remainingGaps || []).reduce((total, item) => total + Number(item.remainingGapHours || 0), 0);
+  const completeCoverHours = sample.kpis.usedHours + remainingGapBase;
+  const effectiveBudgetHours = budgetHours * selectivityFactor * shiftCoverageFactor;
+  const coverProgress = manualShortage <= 0 ? 1 : Math.max(0, Math.min(1, effectiveBudgetHours / Math.max(1, completeCoverHours)));
+  const shortageAvoided = Math.min(manualShortage, manualShortage * coverProgress);
+  const riskAvoided = Math.min(sample.kpis.manualCoverageRisk || 0, (sample.kpis.manualCoverageRisk || 0) * coverProgress);
+  const neededHours = completeCoverHours * coverProgress * calloutFactor * shiftUseFactor;
   const usedHours = Math.min(neededHours, budgetHours);
   const optimizedShortage = Math.max(0, manualShortage - shortageAvoided);
-  const capacityUseFactor = usedHours / Math.max(1, sample.kpis.usedHours);
-  const gapMultiplier = Math.max(
-    manualShortage > 0 ? 0.08 : 0,
-    Math.min(2.4, 1 / Math.max(0.55, coverageFactor * Math.sqrt(Math.max(0.55, capacityUseFactor)))),
-  );
-  const constrainedAndWeak = usedHours >= budgetHours * 0.98 && manualShortage > 0;
-  const status = manualShortage <= 0 || (!constrainedAndWeak && shortageAvoided > sample.kpis.shortageAvoided * 0.55) ? "Ready" : "Review";
+  const gapMultiplier = manualShortage <= 0 ? 0 : Math.max(0, Math.min(3, optimizedShortage / Math.max(1, sample.kpis.optimizedShortage || manualShortage)));
+  const constrainedAndWeak = usedHours >= budgetHours * 0.98 && optimizedShortage > 0;
+  const status = manualShortage <= 0 || optimizedShortage <= 0.5 || (!constrainedAndWeak && coverProgress >= 0.65) ? "Ready" : "Review";
   return { ...sample, shortageAvoided, riskAvoided, usedHours, budgetHours, optimizedShortage, status, gapMultiplier };
 }
 
 function renderMetrics(data, scenario) {
-  byId("metric-shortage").textContent = `${fmt.format(Math.round(scenario.shortageAvoided))}h`;
-  byId("metric-shortage-note").textContent = `Original ${fmt.format(scenario.kpis.manualShortage)}h -> optimized ${fmt.format(scenario.optimizedShortage)}h`;
-  byId("metric-risk").textContent = `${fmt.format(Math.round(scenario.riskAvoided))}h`;
+  byId("metric-shortage").textContent = `${whole.format(Math.round(scenario.shortageAvoided))}h`;
+  byId("metric-shortage-note").textContent = `Original shortage ${whole.format(scenario.kpis.manualShortage)}h -> after optimization ${whole.format(scenario.optimizedShortage)}h`;
+  byId("metric-risk").textContent = `${whole.format(Math.round(scenario.riskAvoided))}h`;
   byId("metric-budget").textContent = pct.format(scenario.usedHours / Math.max(1, scenario.budgetHours));
-  byId("metric-budget-note").textContent = `${fmt.format(scenario.usedHours)}h used of ${fmt.format(scenario.budgetHours)}h funded`;
+  byId("metric-budget-note").textContent = `${whole.format(scenario.usedHours)}h used of ${whole.format(scenario.budgetHours)}h funded`;
   byId("metric-status").textContent = scenario.status;
   byId("metric-status-note").textContent = scenario.status === "Ready" ? "Ready for scheduler review" : "Adjust parameters before rollout";
 }
@@ -178,8 +179,8 @@ function renderComparison(data, scenario) {
       return `<div class="bar-row">
         <div class="bar-row__label">${item.mode}</div>
         <div class="bar-stack">
-          <div class="bar-line"><span>Shortage</span><div class="bar-track"><b style="width:${shortagePct}%"></b></div><strong>${fmt.format(item.shortageHours)}</strong></div>
-          <div class="bar-line bar-line--risk"><span>Risk</span><div class="bar-track"><b style="width:${riskPct}%"></b></div><strong>${fmt.format(item.coverageRiskHours)}</strong></div>
+          <div class="bar-line"><span>Remaining shortage</span><div class="bar-track"><b style="width:${shortagePct}%"></b></div><strong>${whole.format(item.shortageHours)}</strong></div>
+          <div class="bar-line bar-line--risk"><span>Risk hours</span><div class="bar-track"><b style="width:${riskPct}%"></b></div><strong>${whole.format(item.coverageRiskHours)}</strong></div>
         </div>
       </div>`;
     })
@@ -197,7 +198,7 @@ function renderBudgets(data, scenario) {
       const used = Math.min(item.usedHours * usedScale, budget);
       const usedPct = (used / Math.max(1, budget)) * 100;
       return `<div class="meter">
-        <div class="meter__top"><strong>${item.role}</strong><span>${fmt.format(used)}h used of ${fmt.format(budget)}h funded</span></div>
+        <div class="meter__top"><strong>${item.role}</strong><span>${whole.format(used)}h used of ${whole.format(budget)}h funded</span></div>
         <div class="meter__track"><b style="width:${Math.min(100, usedPct)}%"></b></div>
       </div>`;
     })
@@ -216,8 +217,8 @@ function renderGaps(data, scenario) {
       return `<article class="gap-card">
         <strong>${item.role}</strong>
         <div class="bar-track"><b style="width:${width}%"></b></div>
-        <span>${fmt.format(item.remainingGapHours)} uncovered role-hours</span>
-        <small>${item.pressureHours} hours with a remaining gap</small>
+        <span>${whole.format(item.remainingGapHours)} uncovered role-hours</span>
+        <small>${whole.format(item.pressureHours)} facility-hours with a post-optimization gap</small>
       </article>`;
     })
     .join("");

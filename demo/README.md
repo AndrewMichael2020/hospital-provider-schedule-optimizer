@@ -71,12 +71,27 @@ python3 run_fixed_rotation_overflow_workflow.py \
   --out outputs/demo_pressure_severe \
   --print-top-n 0
 
+python3 run_fixed_rotation_overflow_workflow.py \
+  --seed 42 \
+  --facilities 4 \
+  --days 30 \
+  --overflow-shift-hours 10 \
+  --overflow-budget-share-md 0.10 \
+  --overflow-budget-share-np 0.10 \
+  --overflow-budget-share-rn 0.10 \
+  --overflow-budget-share-hcw 0.10 \
+  --demand-pressure-multiplier 2.00 \
+  --min-overflow-covered-gap-hours 4.0 \
+  --out outputs/demo_pressure_extreme \
+  --print-top-n 0
+
 python3 demo/build_demo_data.py \
   --results-root outputs/demo_pressure_surge \
   --pressure-scenario normal=1.00=outputs/demo_pressure_normal \
   --pressure-scenario moderate=1.25=outputs/demo_pressure_moderate \
   --pressure-scenario surge=1.35=outputs/demo_pressure_surge \
   --pressure-scenario severe=1.60=outputs/demo_pressure_severe \
+  --pressure-scenario extreme=2.00=outputs/demo_pressure_extreme \
   --out demo/data/demo_case.json
 ```
 
