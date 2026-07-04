@@ -15,7 +15,7 @@
       "label": "Shortage hours avoided",
       "value": 496,
       "unit": "hours",
-      "note": "Manual 877 -> optimized 381"
+      "note": "Original 877 -> optimized 381"
     },
     {
       "label": "Coverage-risk hours avoided",
@@ -44,7 +44,7 @@
       "waitRiskProxy": 533.3
     },
     {
-      "mode": "Manual overflow",
+      "mode": "Original overflow",
       "shortageHours": 877.0,
       "coverageRiskHours": 704,
       "waitRiskProxy": 396.6
@@ -578,7 +578,7 @@
   },
   "plainLanguage": {
     "problem": "The standing schedule is protected. The business case is whether funded overflow can be placed earlier and more precisely.",
-    "manual": "Manual call-outs react after visible pressure appears, which can miss the right role, site, or hour.",
+    "manual": "Original call-outs react after visible pressure appears, which can miss the right role, site, or hour.",
     "optimizer": "Adjust the levers, regenerate the recommendation, and compare the added overflow schedule against the protected core.",
     "remaining": "Remaining gaps stay visible so schedulers see what the funded bank could not solve."
   }

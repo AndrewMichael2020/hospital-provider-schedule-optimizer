@@ -53,7 +53,7 @@ function simulateScenario(data, params) {
 
 function renderMetrics(data, scenario) {
   byId("metric-shortage").textContent = `${fmt.format(Math.round(scenario.shortageAvoided))}h`;
-  byId("metric-shortage-note").textContent = `Manual ${fmt.format(data.parameters.baselineManualShortageHours)}h -> optimized ${fmt.format(scenario.optimizedShortage)}h`;
+  byId("metric-shortage-note").textContent = `Original ${fmt.format(data.parameters.baselineManualShortageHours)}h -> optimized ${fmt.format(scenario.optimizedShortage)}h`;
   byId("metric-risk").textContent = `${fmt.format(Math.round(scenario.riskAvoided))}h`;
   byId("metric-budget").textContent = pct.format(scenario.usedHours / Math.max(1, scenario.budgetHours));
   byId("metric-budget-note").textContent = `${fmt.format(scenario.usedHours)} of ${fmt.format(scenario.budgetHours)} funded hours`;

@@ -103,7 +103,7 @@ def _remaining_gaps(need_detail: pd.DataFrame, scenario: str) -> list[dict[str, 
 def _comparison(comparison: pd.DataFrame, scenario: str) -> list[dict[str, Any]]:
     labels = {
         "static_fixed_rotation": "Fixed rotation only",
-        "manual_threshold_overflow": "Manual overflow",
+        "manual_threshold_overflow": "Original overflow",
         "optimized_overflow_reallocation": "Optimized overflow",
     }
     data = comparison[comparison["scenario_name"] == scenario].copy()
@@ -228,7 +228,7 @@ def build_payload(results_root: Path, preferred_scenario: str, top_actions: int)
                 "label": "Shortage hours avoided",
                 "value": _safe_int(shortage_reduction),
                 "unit": "hours",
-                "note": f"Manual {manual_shortage:.0f} -> optimized {optimized_shortage:.0f}",
+                "note": f"Original {manual_shortage:.0f} -> optimized {optimized_shortage:.0f}",
             },
             {
                 "label": "Coverage-risk hours avoided",
@@ -258,7 +258,7 @@ def build_payload(results_root: Path, preferred_scenario: str, top_actions: int)
         "parameters": _parameter_defaults(row),
         "plainLanguage": {
             "problem": "The standing schedule is protected. The business case is whether funded overflow can be placed earlier and more precisely.",
-            "manual": "Manual call-outs react after visible pressure appears, which can miss the right role, site, or hour.",
+            "manual": "Original call-outs react after visible pressure appears, which can miss the right role, site, or hour.",
             "optimizer": "Adjust the levers, regenerate the recommendation, and compare the added overflow schedule against the protected core.",
             "remaining": "Remaining gaps stay visible so schedulers see what the funded bank could not solve.",
         },
