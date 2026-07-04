@@ -2,3 +2,5 @@ __pycache__/
 *.pyc
 data/
 outputs/
+!demo/data/
+!demo/data/demo_case.json

@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hospital Schedule Optimizer Demo</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="hero">
+      <nav class="topbar" aria-label="Demo navigation">
+        <a href="#case">Case</a>
+        <a href="#comparison">Results</a>
+        <a href="#actions">Actions</a>
+        <a href="#limits">Remaining gaps</a>
+      </nav>
+      <div class="hero__content">
+        <p class="eyebrow">Synthetic ER workforce optimization</p>
+        <h1 id="case">Hospital Schedule Optimizer</h1>
+        <p id="case-subtitle" class="lede">Loading the demo case...</p>
+        <dl class="case-strip" aria-label="Case facts">
+          <div>
+            <dt>Network</dt>
+            <dd id="case-network">Loading</dd>
+          </div>
+          <div>
+            <dt>Scenario</dt>
+            <dd id="case-scenario">Loading</dd>
+          </div>
+          <div>
+            <dt>Operating mode</dt>
+            <dd>Shadow advisory</dd>
+          </div>
+        </dl>
+        <div class="hero__badges" aria-label="Demo safeguards">
+          <span>Synthetic data</span>
+          <span>No PHI</span>
+          <span>Fixed rotations protected</span>
+          <span>GitHub Pages ready</span>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="section section--tight" aria-labelledby="kpi-heading">
+        <div class="section__header">
+          <p class="eyebrow">One clean case</p>
+          <h2 id="kpi-heading">Funded overflow placed where it helps most</h2>
+          <p>The demo starts from protected core rotations, then uses role-specific overflow banks to reduce the hours where demand exceeds scheduled capacity.</p>
+        </div>
+        <div id="kpi-grid" class="kpi-grid" aria-live="polite"></div>
+      </section>
+
+      <section class="section story-grid" aria-label="How the optimizer works">
+        <article class="story-card">
+          <span class="story-card__step">1</span>
+          <h2>The scheduling problem</h2>
+          <p id="story-problem"></p>
+        </article>
+        <article class="story-card">
+          <span class="story-card__step">2</span>
+          <h2>What manual overflow does</h2>
+          <p id="story-manual"></p>
+        </article>
+        <article class="story-card">
+          <span class="story-card__step">3</span>
+          <h2>What the optimizer changes</h2>
+          <p id="story-optimizer"></p>
+        </article>
+        <article class="story-card">
+          <span class="story-card__step">4</span>
+          <h2>What remains</h2>
+          <p id="story-remaining"></p>
+        </article>
+      </section>
+
+      <section id="comparison" class="section split" aria-labelledby="comparison-heading">
+        <div class="section__header">
+          <p class="eyebrow">Manual vs optimized</p>
+          <h2 id="comparison-heading">The same fixed schedule, better overflow placement</h2>
+          <p>Lower bars are better. The optimized plan uses the same funded overflow idea but ranks the role-hour gaps before placing capacity.</p>
+          <div class="legend" aria-label="Chart legend">
+            <span><b class="legend__teal"></b> Shortage hours</span>
+            <span><b class="legend__amber"></b> Coverage-risk hours</span>
+          </div>
+        </div>
+        <div id="comparison-chart" class="chart-panel"></div>
+      </section>
+
+      <section class="section split" aria-labelledby="budget-heading">
+        <div class="section__header">
+          <p class="eyebrow">Role-specific banks</p>
+          <h2 id="budget-heading">No silent borrowing across roles</h2>
+          <p>MD, NP, RN, and support capacity each have their own overflow bank. The demo keeps those guardrails visible.</p>
+          <p id="budget-note" class="status-note">Loading budget status...</p>
+        </div>
+        <div id="budget-chart" class="chart-panel"></div>
+      </section>
+
+      <section id="actions" class="section" aria-labelledby="actions-heading">
+        <div class="section__header">
+          <p class="eyebrow">Scheduler worklist preview</p>
+          <h2 id="actions-heading">Top overflow actions</h2>
+          <p>These are the highest-priority activation windows selected from the synthetic run.</p>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Facility</th>
+                <th>Role</th>
+                <th>Window</th>
+                <th>Priority</th>
+                <th>Expected hit</th>
+              </tr>
+            </thead>
+            <tbody id="actions-table"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="limits" class="section split" aria-labelledby="gaps-heading">
+        <div class="section__header">
+          <p class="eyebrow">Transparent limits</p>
+          <h2 id="gaps-heading">Remaining gaps after optimization</h2>
+          <p>A good demo should not pretend the model solved every surge. This view shows what the funded bank could not cover.</p>
+        </div>
+        <div id="gaps-chart" class="chart-panel"></div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>Built from the repository's synthetic fixed-rotation overflow workflow. Not clinical guidance and not based on patient data.</p>
+      <p id="data-source"></p>
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+</html>

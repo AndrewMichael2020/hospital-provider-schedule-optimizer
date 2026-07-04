@@ -1,0 +1,187 @@
+{
+  "generatedFrom": "outputs/fixed_rotation_overflow_multirole_funded10_v1",
+  "scenario": "tabfm_guarded",
+  "case": {
+    "title": "Funded overflow, placed before the surge",
+    "subtitle": "Synthetic 4-facility, 30-day ER network using protected fixed rotations and role-specific overflow banks.",
+    "syntheticData": true,
+    "noPhi": true,
+    "seed": 42,
+    "facilities": 4,
+    "days": 30
+  },
+  "kpis": [
+    {
+      "label": "Shortage hours avoided",
+      "value": 496,
+      "unit": "hours",
+      "note": "Manual 877 -> optimized 381"
+    },
+    {
+      "label": "Coverage-risk hours avoided",
+      "value": 350,
+      "unit": "hours",
+      "note": "Hours with any remaining role shortage"
+    },
+    {
+      "label": "Wait-risk proxy reduced",
+      "value": 191.7,
+      "unit": "points",
+      "note": "Only counted during shortage periods"
+    },
+    {
+      "label": "Budget status",
+      "value": "Pass",
+      "unit": "",
+      "note": "1200 of 1285 role-hours used"
+    }
+  ],
+  "comparison": [
+    {
+      "mode": "Fixed rotation only",
+      "shortageHours": 1123.0,
+      "coverageRiskHours": 873,
+      "waitRiskProxy": 533.3
+    },
+    {
+      "mode": "Manual overflow",
+      "shortageHours": 877.0,
+      "coverageRiskHours": 704,
+      "waitRiskProxy": 396.6
+    },
+    {
+      "mode": "Optimized overflow",
+      "shortageHours": 381.0,
+      "coverageRiskHours": 354,
+      "waitRiskProxy": 205.0
+    }
+  ],
+  "roleBudgets": [
+    {
+      "role": "MD",
+      "budgetHours": 364.0,
+      "usedHours": 290.0,
+      "remainingHours": 74.0,
+      "usedPct": 79.7,
+      "overBudget": false
+    },
+    {
+      "role": "NP",
+      "budgetHours": 120.0,
+      "usedHours": 120.0,
+      "remainingHours": 0.0,
+      "usedPct": 100.0,
+      "overBudget": false
+    },
+    {
+      "role": "RN",
+      "budgetHours": 436.8,
+      "usedHours": 430.0,
+      "remainingHours": 6.8,
+      "usedPct": 98.4,
+      "overBudget": false
+    },
+    {
+      "role": "HCW",
+      "budgetHours": 364.0,
+      "usedHours": 360.0,
+      "remainingHours": 4.0,
+      "usedPct": 98.9,
+      "overBudget": false
+    }
+  ],
+  "remainingGaps": [
+    {
+      "role": "MD",
+      "remainingGapHours": 89.0,
+      "pressureHours": 87
+    },
+    {
+      "role": "NP",
+      "remainingGapHours": 78.0,
+      "pressureHours": 76
+    },
+    {
+      "role": "RN",
+      "remainingGapHours": 114.0,
+      "pressureHours": 113
+    },
+    {
+      "role": "HCW",
+      "remainingGapHours": 100.0,
+      "pressureHours": 97
+    }
+  ],
+  "topActions": [
+    {
+      "facility": "FAC_002",
+      "role": "MD",
+      "window": "Jan 25, 10 AM to Jan 25, 8 PM",
+      "priority": "P1",
+      "expectedHit": true,
+      "score": 18.59
+    },
+    {
+      "facility": "FAC_003",
+      "role": "RN",
+      "window": "Jan 20, 2 PM to Jan 21, 12 AM",
+      "priority": "P1",
+      "expectedHit": true,
+      "score": 15.97
+    },
+    {
+      "facility": "FAC_002",
+      "role": "RN",
+      "window": "Jan 19, 8 AM to Jan 19, 6 PM",
+      "priority": "P1",
+      "expectedHit": true,
+      "score": 15.44
+    },
+    {
+      "facility": "FAC_003",
+      "role": "RN",
+      "window": "Jan 18, 2 PM to Jan 19, 12 AM",
+      "priority": "P1",
+      "expectedHit": true,
+      "score": 15.36
+    },
+    {
+      "facility": "FAC_002",
+      "role": "MD",
+      "window": "Jan 26, 2 PM to Jan 27, 12 AM",
+      "priority": "P1",
+      "expectedHit": true,
+      "score": 15.34
+    },
+    {
+      "facility": "FAC_003",
+      "role": "MD",
+      "window": "Jan 11, 10 AM to Jan 11, 8 PM",
+      "priority": "P1",
+      "expectedHit": true,
+      "score": 15.22
+    },
+    {
+      "facility": "FAC_003",
+      "role": "RN",
+      "window": "Jan 10, 2 PM to Jan 11, 12 AM",
+      "priority": "P1",
+      "expectedHit": true,
+      "score": 15.11
+    },
+    {
+      "facility": "FAC_001",
+      "role": "RN",
+      "window": "Jan 13, 2 PM to Jan 14, 12 AM",
+      "priority": "P1",
+      "expectedHit": true,
+      "score": 14.82
+    }
+  ],
+  "plainLanguage": {
+    "problem": "The standing schedule is protected, but demand still spikes by role, site, and hour.",
+    "manual": "Threshold-based call-outs react to visible pressure and can arrive late, target the wrong role, or miss a site.",
+    "optimizer": "The optimizer spends each role's funded overflow bank where it covers the most forecast shortage.",
+    "remaining": "The demo still shows remaining gaps because a budgeted overflow bank cannot solve every surge hour."
+  }
+}

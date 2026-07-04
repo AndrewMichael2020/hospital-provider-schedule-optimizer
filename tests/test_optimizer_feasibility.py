@@ -11,8 +11,8 @@ def _demand_df(rows: int = 3) -> pd.DataFrame:
         {
             "facility_id": ["FAC_A"] * rows,
             "timestamp": ts,
-            "y_pred": [10, 20, 15],
-            "occupancy_pressure": [0.5, 0.5, 0.5],
+            "y_pred": ([10, 20, 15] * ((rows + 2) // 3))[:rows],
+            "occupancy_pressure": ([0.5, 0.5, 0.5] * ((rows + 2) // 3))[:rows],
         }
     )
 
