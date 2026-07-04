@@ -1,6 +1,14 @@
 # Hospital Schedule Optimizer Demo
 
-This folder is a static GitHub Pages demo built from the repository's synthetic fixed-rotation overflow workflow.
+This folder is a static GitHub Pages scheduling-console demo built from the repository's synthetic fixed-rotation overflow workflow.
+
+The demo is designed for scheduling and operations users. It shows:
+
+- the protected initial schedule;
+- scenario controls for budget, demand pressure, minimum covered gap, and shift length;
+- a regenerate button that updates the business-case metrics;
+- the optimized overflow schedule;
+- compact impact, budget, and remaining-gap views.
 
 ## Build the data
 
@@ -38,9 +46,6 @@ Then open `http://127.0.0.1:8000/demo/`.
 
 ## Publish with GitHub Pages
 
-In repository settings, choose GitHub Pages source:
+This repository publishes the `demo` folder through `.github/workflows/pages.yml` because GitHub Pages branch-source mode only supports `/` and `/docs`.
 
-- Branch: `main`
-- Folder: `/demo`
-
-The demo is plain HTML, CSS, JavaScript, and JSON. It does not need a build step or backend.
+The demo is plain HTML, CSS, JavaScript, and JSON. It does not need a frontend build step or backend.

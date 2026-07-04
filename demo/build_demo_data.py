@@ -142,11 +142,63 @@ def _top_actions(psp: pd.DataFrame, scenario: str, limit: int) -> list[dict[str,
     return actions
 
 
+def _schedule_rows(df: pd.DataFrame, scenario: str | None, limit: int = 16) -> list[dict[str, Any]]:
+    data = df.copy()
+    if scenario is not None and "scenario_name" in data.columns:
+        data = data[data["scenario_name"] == scenario].copy()
+    start_col = "planned_activation_start" if "planned_activation_start" in data.columns else "shift_start"
+    end_col = "planned_activation_end" if "planned_activation_end" in data.columns else "shift_end"
+    priority_col = "priority_tier" if "priority_tier" in data.columns else None
+    score_col = "priority_score" if "priority_score" in data.columns else None
+    data[start_col] = pd.to_datetime(data[start_col], errors="coerce")
+    data[end_col] = pd.to_datetime(data[end_col], errors="coerce")
+    if "is_core_rotation" in data.columns:
+        data = data[data["is_core_rotation"].astype(bool) == (scenario is None)].copy()
+    data = data.sort_values([start_col, "facility_id", "role"]).head(limit)
+    rows = []
+    for _, row in data.iterrows():
+        role = str(row["role"]).replace("HOSPITALIST_OVERFLOW", "Hospitalist")
+        facility = str(row["facility_id"])
+        department = str(row.get("department_id", "ER_MAIN"))
+        start = pd.to_datetime(row[start_col], errors="coerce")
+        end = pd.to_datetime(row[end_col], errors="coerce")
+        hours = max(0.0, (end - start).total_seconds() / 3600.0) if not pd.isna(start) and not pd.isna(end) else 0.0
+        rows.append(
+            {
+                "facility": facility,
+                "department": department,
+                "role": role,
+                "line": str(row.get("rotation_line_id", row.get("plan_id", ""))).replace("_", " "),
+                "start": _format_time(start),
+                "end": _format_time(end),
+                "hours": round(hours, 1),
+                "priority": str(row[priority_col]) if priority_col else "Core",
+                "score": round(_safe_float(row[score_col]), 2) if score_col else 0.0,
+                "status": "Add overflow" if scenario is not None else "Protected core",
+            }
+        )
+    return rows
+
+
+def _parameter_defaults(row: pd.Series) -> dict[str, Any]:
+    return {
+        "overflowBudgetPct": 10,
+        "surgeMultiplier": 135,
+        "minimumCoveredGapHours": 4,
+        "overflowShiftHours": 10,
+        "baselineManualShortageHours": round(_safe_float(row["manual_shortage_hours"]), 1),
+        "baseOptimizedShortageHours": round(_safe_float(row["optimized_shortage_hours"]), 1),
+        "baseBudgetHours": round(_safe_float(row["total_overflow_budget_hours"]), 1),
+        "baseUsedHours": round(_safe_float(row["total_optimized_overflow_hours_used"]), 1),
+    }
+
+
 def build_payload(results_root: Path, preferred_scenario: str, top_actions: int) -> dict[str, Any]:
     summary = _read_csv(results_root / "overflow_reallocation_summary.csv")
     comparison = _read_csv(results_root / "manual_vs_optimized_overflow.csv")
     need_detail = _read_csv(results_root / "recommended_overflow_capacity_needed_by_hour.csv")
     psp = _read_parquet(results_root / "planned_schedule_table.parquet")
+    psh = _read_parquet(results_root / "provider_shifts_historical.parquet")
     meta_path = results_root / "fixed_rotation_overflow.meta.json"
     meta = json.loads(meta_path.read_text(encoding="utf-8")) if meta_path.exists() else {}
 
@@ -201,11 +253,14 @@ def build_payload(results_root: Path, preferred_scenario: str, top_actions: int)
         "roleBudgets": _role_budget(row),
         "remainingGaps": _remaining_gaps(need_detail, scenario),
         "topActions": _top_actions(psp, scenario, top_actions),
+        "initialSchedule": _schedule_rows(psh, None, limit=16),
+        "optimizedSchedule": _schedule_rows(psp, scenario, limit=16),
+        "parameters": _parameter_defaults(row),
         "plainLanguage": {
-            "problem": "The standing schedule is protected, but demand still spikes by role, site, and hour.",
-            "manual": "Threshold-based call-outs react to visible pressure and can arrive late, target the wrong role, or miss a site.",
-            "optimizer": "The optimizer spends each role's funded overflow bank where it covers the most forecast shortage.",
-            "remaining": "The demo still shows remaining gaps because a budgeted overflow bank cannot solve every surge hour.",
+            "problem": "The standing schedule is protected. The business case is whether funded overflow can be placed earlier and more precisely.",
+            "manual": "Manual call-outs react after visible pressure appears, which can miss the right role, site, or hour.",
+            "optimizer": "Adjust the levers, regenerate the recommendation, and compare the added overflow schedule against the protected core.",
+            "remaining": "Remaining gaps stay visible so schedulers see what the funded bank could not solve.",
         },
     }
 

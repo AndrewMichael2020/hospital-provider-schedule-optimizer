@@ -3,135 +3,170 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Hospital Schedule Optimizer Demo</title>
+    <title>Hospital Schedule Optimizer Business Case</title>
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
-    <header class="hero">
-      <nav class="topbar" aria-label="Demo navigation">
-        <a href="#case">Case</a>
-        <a href="#comparison">Results</a>
-        <a href="#actions">Actions</a>
-        <a href="#limits">Remaining gaps</a>
-      </nav>
-      <div class="hero__content">
-        <p class="eyebrow">Synthetic ER workforce optimization</p>
-        <h1 id="case">Hospital Schedule Optimizer</h1>
-        <p id="case-subtitle" class="lede">Loading the demo case...</p>
-        <dl class="case-strip" aria-label="Case facts">
-          <div>
-            <dt>Network</dt>
-            <dd id="case-network">Loading</dd>
-          </div>
-          <div>
-            <dt>Scenario</dt>
-            <dd id="case-scenario">Loading</dd>
-          </div>
-          <div>
-            <dt>Operating mode</dt>
-            <dd>Shadow advisory</dd>
-          </div>
-        </dl>
-        <div class="hero__badges" aria-label="Demo safeguards">
-          <span>Synthetic data</span>
-          <span>No PHI</span>
-          <span>Fixed rotations protected</span>
-          <span>GitHub Pages ready</span>
-        </div>
+    <header class="app-shell">
+      <div>
+        <p class="eyebrow">Scheduling operations business case</p>
+        <h1>Hospital Schedule Optimizer</h1>
+        <p id="case-subtitle">Loading synthetic case...</p>
+      </div>
+      <div class="top-status" aria-label="Demo safeguards">
+        <span>Synthetic data</span>
+        <span>No PHI</span>
+        <span>Protected core rotations</span>
       </div>
     </header>
 
-    <main>
-      <section class="section section--tight" aria-labelledby="kpi-heading">
-        <div class="section__header">
-          <p class="eyebrow">One clean case</p>
-          <h2 id="kpi-heading">Funded overflow placed where it helps most</h2>
-          <p>The demo starts from protected core rotations, then uses role-specific overflow banks to reduce the hours where demand exceeds scheduled capacity.</p>
-        </div>
-        <div id="kpi-grid" class="kpi-grid" aria-live="polite"></div>
-      </section>
-
-      <section class="section story-grid" aria-label="How the optimizer works">
-        <article class="story-card">
-          <span class="story-card__step">1</span>
-          <h2>The scheduling problem</h2>
-          <p id="story-problem"></p>
-        </article>
-        <article class="story-card">
-          <span class="story-card__step">2</span>
-          <h2>What manual overflow does</h2>
-          <p id="story-manual"></p>
-        </article>
-        <article class="story-card">
-          <span class="story-card__step">3</span>
-          <h2>What the optimizer changes</h2>
-          <p id="story-optimizer"></p>
-        </article>
-        <article class="story-card">
-          <span class="story-card__step">4</span>
-          <h2>What remains</h2>
-          <p id="story-remaining"></p>
-        </article>
-      </section>
-
-      <section id="comparison" class="section split" aria-labelledby="comparison-heading">
-        <div class="section__header">
-          <p class="eyebrow">Manual vs optimized</p>
-          <h2 id="comparison-heading">The same fixed schedule, better overflow placement</h2>
-          <p>Lower bars are better. The optimized plan uses the same funded overflow idea but ranks the role-hour gaps before placing capacity.</p>
-          <div class="legend" aria-label="Chart legend">
-            <span><b class="legend__teal"></b> Shortage hours</span>
-            <span><b class="legend__amber"></b> Coverage-risk hours</span>
+    <main class="dashboard">
+      <section class="card card--controls" aria-labelledby="controls-heading">
+        <div class="card__head">
+          <div>
+            <p class="eyebrow">Scenario controls</p>
+            <h2 id="controls-heading">Regenerate overflow plan</h2>
           </div>
+          <button id="regen-button" type="button">Regenerate</button>
         </div>
-        <div id="comparison-chart" class="chart-panel"></div>
+        <div class="control-grid">
+          <label>
+            <span>Overflow budget</span>
+            <input id="budget-control" type="range" min="5" max="15" step="1" value="10">
+            <b id="budget-value">10%</b>
+          </label>
+          <label>
+            <span>Demand pressure</span>
+            <input id="pressure-control" type="range" min="100" max="160" step="5" value="135">
+            <b id="pressure-value">1.35x</b>
+          </label>
+          <label>
+            <span>Min covered gap</span>
+            <input id="gap-control" type="range" min="2" max="8" step="1" value="4">
+            <b id="gap-value">4h</b>
+          </label>
+          <label>
+            <span>Overflow shift</span>
+            <input id="shift-control" type="range" min="6" max="12" step="1" value="10">
+            <b id="shift-value">10h</b>
+          </label>
+        </div>
       </section>
 
-      <section class="section split" aria-labelledby="budget-heading">
-        <div class="section__header">
-          <p class="eyebrow">Role-specific banks</p>
-          <h2 id="budget-heading">No silent borrowing across roles</h2>
-          <p>MD, NP, RN, and support capacity each have their own overflow bank. The demo keeps those guardrails visible.</p>
-          <p id="budget-note" class="status-note">Loading budget status...</p>
-        </div>
-        <div id="budget-chart" class="chart-panel"></div>
+      <section class="kpi-grid" aria-label="Business case metrics">
+        <article class="metric-card metric-card--primary">
+          <span>Shortage reduction</span>
+          <strong id="metric-shortage">--</strong>
+          <small id="metric-shortage-note">Manual vs optimized</small>
+        </article>
+        <article class="metric-card">
+          <span>Coverage-risk reduction</span>
+          <strong id="metric-risk">--</strong>
+          <small>Hours with any role gap</small>
+        </article>
+        <article class="metric-card">
+          <span>Funded capacity used</span>
+          <strong id="metric-budget">--</strong>
+          <small id="metric-budget-note">Role banks enforced</small>
+        </article>
+        <article class="metric-card">
+          <span>Recommendation status</span>
+          <strong id="metric-status">--</strong>
+          <small id="metric-status-note">Ready for scheduler review</small>
+        </article>
       </section>
 
-      <section id="actions" class="section" aria-labelledby="actions-heading">
-        <div class="section__header">
-          <p class="eyebrow">Scheduler worklist preview</p>
-          <h2 id="actions-heading">Top overflow actions</h2>
-          <p>These are the highest-priority activation windows selected from the synthetic run.</p>
+      <section class="card span-7" aria-labelledby="initial-heading">
+        <div class="card__head">
+          <div>
+            <p class="eyebrow">Current state</p>
+            <h2 id="initial-heading">Initial protected schedule</h2>
+          </div>
+          <span class="pill">Read-only core</span>
         </div>
-        <div class="table-wrap">
+        <div class="table-wrap compact">
           <table>
             <thead>
               <tr>
                 <th>Facility</th>
                 <th>Role</th>
-                <th>Window</th>
-                <th>Priority</th>
-                <th>Expected hit</th>
+                <th>Line</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Hours</th>
               </tr>
             </thead>
-            <tbody id="actions-table"></tbody>
+            <tbody id="initial-schedule"></tbody>
           </table>
         </div>
       </section>
 
-      <section id="limits" class="section split" aria-labelledby="gaps-heading">
-        <div class="section__header">
-          <p class="eyebrow">Transparent limits</p>
-          <h2 id="gaps-heading">Remaining gaps after optimization</h2>
-          <p>A good demo should not pretend the model solved every surge. This view shows what the funded bank could not cover.</p>
+      <section class="card span-5" aria-labelledby="case-heading">
+        <div class="card__head">
+          <div>
+            <p class="eyebrow">Business case</p>
+            <h2 id="case-heading">Why change the overflow process?</h2>
+          </div>
         </div>
-        <div id="gaps-chart" class="chart-panel"></div>
+        <div class="story-stack">
+          <p id="story-problem"></p>
+          <p id="story-manual"></p>
+          <p id="story-optimizer"></p>
+          <p id="story-remaining"></p>
+        </div>
+      </section>
+
+      <section class="card span-7" aria-labelledby="optimized-heading">
+        <div class="card__head">
+          <div>
+            <p class="eyebrow">Recommended future state</p>
+            <h2 id="optimized-heading">New optimized overflow schedule</h2>
+          </div>
+          <span id="run-stamp" class="pill pill--green">Not regenerated</span>
+        </div>
+        <div class="table-wrap compact">
+          <table>
+            <thead>
+              <tr>
+                <th>Facility</th>
+                <th>Role</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Priority</th>
+                <th>Score</th>
+              </tr>
+            </thead>
+            <tbody id="optimized-schedule"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="card span-5" aria-labelledby="charts-heading">
+        <div class="card__head">
+          <div>
+            <p class="eyebrow">Impact view</p>
+            <h2 id="charts-heading">Manual vs optimized</h2>
+          </div>
+        </div>
+        <div id="comparison-chart" class="chart-panel"></div>
+        <div id="budget-chart" class="chart-panel chart-panel--meters"></div>
+      </section>
+
+      <section class="card span-12" aria-labelledby="gaps-heading">
+        <div class="card__head">
+          <div>
+            <p class="eyebrow">Remaining pressure</p>
+            <h2 id="gaps-heading">Uncovered role gaps after optimization</h2>
+          </div>
+          <span class="pill">No overclaiming</span>
+        </div>
+        <div id="gaps-chart" class="gap-grid"></div>
       </section>
     </main>
 
-    <footer class="footer">
-      <p>Built from the repository's synthetic fixed-rotation overflow workflow. Not clinical guidance and not based on patient data.</p>
-      <p id="data-source"></p>
+    <footer>
+      <span>Built from the repository's synthetic fixed-rotation overflow workflow.</span>
+      <span id="data-source">Loading source...</span>
     </footer>
 
     <script src="app.js"></script>
