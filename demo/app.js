@@ -128,8 +128,11 @@ function renderMetrics(data, scenario) {
   byId("metric-shortage").textContent = `${whole.format(Math.round(scenario.shortageAvoided))}h`;
   byId("metric-shortage-note").textContent = `Original shortage ${whole.format(scenario.kpis.manualShortage)}h -> after optimization ${whole.format(scenario.optimizedShortage)}h`;
   byId("metric-risk").textContent = `${whole.format(Math.round(scenario.riskAvoided))}h`;
-  byId("metric-budget").textContent = pct.format(scenario.usedHours / Math.max(1, scenario.budgetHours));
-  byId("metric-budget-note").textContent = `${whole.format(scenario.usedHours)}h used of ${whole.format(scenario.budgetHours)}h funded`;
+  byId("metric-budget").textContent = scenario.budgetHours > 0 ? pct.format(scenario.usedHours / scenario.budgetHours) : "0%";
+  byId("metric-budget-note").textContent =
+    scenario.budgetHours > 0
+      ? `${whole.format(scenario.usedHours)}h used of ${whole.format(scenario.budgetHours)}h funded`
+      : "No overflow bank funded; expected overflow need remains";
   byId("metric-status").textContent = scenario.status;
   byId("metric-status-note").textContent = scenario.status === "Ready" ? "Ready for scheduler review" : "Adjust parameters before rollout";
 }
@@ -192,13 +195,29 @@ function renderBudgets(data, scenario) {
   const baseUsed = scenario.kpis.usedHours || 1;
   const budgetScale = scenario.budgetHours / baseBudget;
   const usedScale = scenario.usedHours / baseUsed;
+  const pill = byId("budget-status-pill");
+  const hasRemainingNeed = scenario.optimizedShortage > 0.5;
+  if (scenario.budgetHours <= 0 && hasRemainingNeed) {
+    pill.textContent = "No bank funded";
+    pill.className = "pill pill--amber";
+  } else if (hasRemainingNeed && scenario.usedHours >= scenario.budgetHours * 0.98) {
+    pill.textContent = "Bank exhausted";
+    pill.className = "pill pill--amber";
+  } else if (!hasRemainingNeed) {
+    pill.textContent = "Need covered";
+    pill.className = "pill pill--green";
+  } else {
+    pill.textContent = "Within funded bank";
+    pill.className = "pill pill--green";
+  }
   byId("budget-chart").innerHTML = scenario.roleBudgets
     .map((item) => {
       const budget = item.budgetHours * budgetScale;
       const used = Math.min(item.usedHours * usedScale, budget);
       const usedPct = (used / Math.max(1, budget)) * 100;
+      const label = budget > 0 ? `${whole.format(used)}h used of ${whole.format(budget)}h funded` : "0h funded";
       return `<div class="meter">
-        <div class="meter__top"><strong>${item.role}</strong><span>${whole.format(used)}h used of ${whole.format(budget)}h funded</span></div>
+        <div class="meter__top"><strong>${item.role}</strong><span>${label}</span></div>
         <div class="meter__track"><b style="width:${Math.min(100, usedPct)}%"></b></div>
       </div>`;
     })
