@@ -100,6 +100,10 @@ h2 {
   text-decoration: none;
 }
 
+.top-status a {
+  color: #ffffff;
+}
+
 .dashboard {
   display: grid;
   width: min(1480px, calc(100% - 1.5rem));
