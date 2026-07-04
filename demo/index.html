@@ -87,19 +87,15 @@
         <div id="budget-chart" class="chart-panel chart-panel--meters"></div>
       </section>
 
-      <section class="card span-5" aria-labelledby="case-heading">
+      <section class="card span-5" aria-labelledby="gaps-heading">
         <div class="card__head">
           <div>
-            <p class="eyebrow">Business case</p>
-            <h2 id="case-heading">Why change the overflow process?</h2>
+            <p class="eyebrow">Remaining pressure</p>
+            <h2 id="gaps-heading">Uncovered role gaps after optimization</h2>
           </div>
+          <span class="pill">No overclaiming</span>
         </div>
-        <div class="story-stack">
-          <p id="story-problem"></p>
-          <p id="story-manual"></p>
-          <p id="story-optimizer"></p>
-          <p id="story-remaining"></p>
-        </div>
+        <div id="gaps-chart" class="gap-grid gap-grid--compact"></div>
       </section>
 
       <section class="card span-7" aria-labelledby="initial-heading">
@@ -127,7 +123,22 @@
         </div>
       </section>
 
-      <section class="card span-7" aria-labelledby="optimized-heading">
+      <section class="card span-5" aria-labelledby="case-heading">
+        <div class="card__head">
+          <div>
+            <p class="eyebrow">Business case</p>
+            <h2 id="case-heading">Why change the overflow process?</h2>
+          </div>
+        </div>
+        <div class="story-stack">
+          <p id="story-problem"></p>
+          <p id="story-manual"></p>
+          <p id="story-optimizer"></p>
+          <p id="story-remaining"></p>
+        </div>
+      </section>
+
+      <section class="card span-12" aria-labelledby="optimized-heading">
         <div class="card__head">
           <div>
             <p class="eyebrow">Recommended future state</p>
@@ -150,17 +161,6 @@
             <tbody id="optimized-schedule"></tbody>
           </table>
         </div>
-      </section>
-
-      <section class="card span-12" aria-labelledby="gaps-heading">
-        <div class="card__head">
-          <div>
-            <p class="eyebrow">Remaining pressure</p>
-            <h2 id="gaps-heading">Uncovered role gaps after optimization</h2>
-          </div>
-          <span class="pill">No overclaiming</span>
-        </div>
-        <div id="gaps-chart" class="gap-grid"></div>
       </section>
     </main>
 
