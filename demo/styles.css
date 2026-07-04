@@ -258,6 +258,12 @@ input:focus-visible {
   color: var(--muted);
 }
 
+.section-note {
+  margin: -0.25rem 0 0.75rem;
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+
 .table-wrap {
   overflow: auto;
   border: 1px solid var(--line);
@@ -360,13 +366,13 @@ tbody tr:last-child td {
   height: 0.72rem;
   overflow: hidden;
   border-radius: 999px;
-  background: #e7efe9;
+  background: #e7edf1;
 }
 
 .meter__track b {
   display: block;
   height: 100%;
-  background: var(--green);
+  background: var(--blue);
 }
 
 .gap-grid {

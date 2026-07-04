@@ -85,7 +85,6 @@
           </div>
         </div>
         <div id="comparison-chart" class="chart-panel"></div>
-        <div id="budget-chart" class="chart-panel chart-panel--meters"></div>
       </section>
 
       <section class="card span-5" aria-labelledby="gaps-heading">
@@ -96,6 +95,18 @@
           </div>
         </div>
         <div id="gaps-chart" class="gap-grid gap-grid--compact"></div>
+      </section>
+
+      <section class="card span-12" aria-labelledby="budget-heading">
+        <div class="card__head">
+          <div>
+            <p class="eyebrow">Overflow bank usage</p>
+            <h2 id="budget-heading">Funded overflow capacity by role</h2>
+          </div>
+          <span class="pill pill--green">Within funded bank</span>
+        </div>
+        <p class="section-note">Higher bars mean more funded overflow capacity consumed, not fewer gaps.</p>
+        <div id="budget-chart" class="chart-panel chart-panel--meters"></div>
       </section>
 
       <section class="card span-7" aria-labelledby="initial-heading">

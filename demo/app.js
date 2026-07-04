@@ -68,7 +68,7 @@ function renderMetrics(data, scenario) {
   byId("metric-shortage-note").textContent = `Original ${fmt.format(data.parameters.baselineManualShortageHours)}h -> optimized ${fmt.format(scenario.optimizedShortage)}h`;
   byId("metric-risk").textContent = `${fmt.format(Math.round(scenario.riskAvoided))}h`;
   byId("metric-budget").textContent = pct.format(scenario.usedHours / Math.max(1, scenario.budgetHours));
-  byId("metric-budget-note").textContent = `${fmt.format(scenario.usedHours)} of ${fmt.format(scenario.budgetHours)} funded hours`;
+  byId("metric-budget-note").textContent = `${fmt.format(scenario.usedHours)}h used of ${fmt.format(scenario.budgetHours)}h funded`;
   byId("metric-status").textContent = scenario.status;
   byId("metric-status-note").textContent = scenario.status === "Ready" ? "Ready for scheduler review" : "Adjust parameters before rollout";
 }
@@ -130,7 +130,7 @@ function renderBudgets(data, scenario) {
       const used = Math.min(item.usedHours * usedScale, budget);
       const usedPct = (used / Math.max(1, budget)) * 100;
       return `<div class="meter">
-        <div class="meter__top"><strong>${item.role}</strong><span>${fmt.format(used)} / ${fmt.format(budget)}h</span></div>
+        <div class="meter__top"><strong>${item.role}</strong><span>${fmt.format(used)}h used of ${fmt.format(budget)}h funded</span></div>
         <div class="meter__track"><b style="width:${Math.min(100, usedPct)}%"></b></div>
       </div>`;
     })
