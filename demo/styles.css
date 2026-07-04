@@ -84,6 +84,7 @@ h2 {
   gap: 0.5rem;
 }
 
+.top-status a,
 .top-status span,
 .pill {
   display: inline-flex;
@@ -96,6 +97,7 @@ h2 {
   font-size: 0.78rem;
   font-weight: 800;
   white-space: nowrap;
+  text-decoration: none;
 }
 
 .dashboard {
@@ -396,6 +398,73 @@ footer {
   font-size: 0.82rem;
 }
 
+.metric-guide {
+  grid-column: 1 / -1;
+}
+
+.definition-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.definition-card {
+  display: grid;
+  gap: 0.45rem;
+  min-height: 172px;
+  padding: 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fbfcfd;
+}
+
+.definition-card strong {
+  font-size: 1rem;
+}
+
+.definition-card p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.formula {
+  align-self: end;
+  padding: 0.55rem;
+  border-radius: 6px;
+  background: #eef5f7;
+  color: #274250;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.78rem;
+}
+
+.metric-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.metric-summary article {
+  padding: 0.8rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.metric-summary span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.metric-summary strong {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 1.7rem;
+}
+
 @media (max-width: 980px) {
   .app-shell,
   footer {
@@ -405,7 +474,9 @@ footer {
 
   .control-grid,
   .kpi-grid,
-  .gap-grid {
+  .gap-grid,
+  .definition-grid,
+  .metric-summary {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -422,7 +493,9 @@ footer {
 
   .control-grid,
   .kpi-grid,
-  .gap-grid {
+  .gap-grid,
+  .definition-grid,
+  .metric-summary {
     grid-template-columns: 1fr;
   }
 

@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hospital Schedule Optimizer Metrics</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="app-shell">
+      <div>
+        <p class="eyebrow">Metric guide</p>
+        <h1>Scheduling Metrics</h1>
+        <p>Plain-language definitions for the business-case demo.</p>
+      </div>
+      <div class="top-status">
+        <a href="index.html">Back to demo</a>
+        <span>Synthetic data</span>
+        <span>No PHI</span>
+      </div>
+    </header>
+
+    <main class="dashboard">
+      <section class="card metric-guide">
+        <div class="card__head">
+          <div>
+            <p class="eyebrow">How to read the demo</p>
+            <h2>Executive summary metrics</h2>
+          </div>
+        </div>
+        <div id="metric-summary" class="metric-summary"></div>
+      </section>
+
+      <section class="card metric-guide">
+        <div class="card__head">
+          <div>
+            <p class="eyebrow">Definitions</p>
+            <h2>What each number means</h2>
+          </div>
+        </div>
+        <div class="definition-grid">
+          <article class="definition-card">
+            <strong>Shortage hours avoided</strong>
+            <p>Estimated role-hours of uncovered demand removed by the optimized overflow plan compared with the original overflow process.</p>
+            <code class="formula">original shortage - optimized shortage</code>
+          </article>
+          <article class="definition-card">
+            <strong>Coverage-risk hours avoided</strong>
+            <p>Hours where at least one role still has an uncovered gap. Lower means fewer time blocks requiring operational escalation.</p>
+            <code class="formula">original risk hours - optimized risk hours</code>
+          </article>
+          <article class="definition-card">
+            <strong>Funded capacity used</strong>
+            <p>Share of the funded overflow bank consumed by the recommendation. Role banks remain separate for MD, NP, RN, and HCW.</p>
+            <code class="formula">used overflow hours / funded overflow hours</code>
+          </article>
+          <article class="definition-card">
+            <strong>Uncovered role-hours</strong>
+            <p>Total remaining demand over the 30-day synthetic case after optimized overflow is applied. This is not per day.</p>
+            <code class="formula">sum(max(required - core - overflow, 0))</code>
+          </article>
+          <article class="definition-card">
+            <strong>Hours with a remaining gap</strong>
+            <p>Count of facility-hours in the 30-day case where that role still has any remaining uncovered need.</p>
+            <code class="formula">count(hours where remaining gap &gt; 0)</code>
+          </article>
+          <article class="definition-card">
+            <strong>Recommendation status</strong>
+            <p>A simple demo signal. Review appears when the selected parameters use all funded capacity but leave weak improvement.</p>
+            <code class="formula">ready unless constrained and weak</code>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <span>Metrics are from the synthetic fixed-rotation overflow workflow.</span>
+      <span id="data-source">Loading source...</span>
+    </footer>
+
+    <script src="metrics.js"></script>
+  </body>
+</html>
