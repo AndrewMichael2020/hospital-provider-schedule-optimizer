@@ -1,7 +1,7 @@
 const fmt = new Intl.NumberFormat("en-US", { maximumFractionDigits: 1 });
 const whole = new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 });
 const pct = new Intl.NumberFormat("en-US", { maximumFractionDigits: 1, style: "percent" });
-const BUDGET_STOPS = [0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 100];
+const BUDGET_STOPS = [0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 50, 100];
 
 let demoData = null;
 let runCount = 0;
@@ -217,7 +217,7 @@ function renderGaps(data, scenario) {
       return `<article class="gap-card">
         <strong>${item.role}</strong>
         <div class="bar-track"><b style="width:${width}%"></b></div>
-        <span>${whole.format(item.remainingGapHours)} uncovered role-hours</span>
+        <span>${whole.format(item.remainingGapHours)} expected overflow role-hours</span>
         <small>${whole.format(item.pressureHours)} facility-hours with a post-optimization gap</small>
       </article>`;
     })
