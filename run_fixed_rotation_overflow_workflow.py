@@ -12,6 +12,8 @@ import pandas as pd
 ROLES = ["md", "np", "rn", "hcw"]
 ROLE_LABELS = {"md": "MD", "np": "NP", "rn": "RN", "hcw": "HCW"}
 ROLE_WEIGHTS = {"md": 2.0, "np": 1.6, "rn": 1.3, "hcw": 1.0}
+ROLE_BASE_UTILIZATION = {"md": 0.78, "np": 0.74, "rn": 0.84, "hcw": 0.82}
+ROLE_SURGE_SENSITIVITY = {"md": 0.36, "np": 0.30, "rn": 0.58, "hcw": 0.50}
 
 
 @dataclass(frozen=True)
@@ -146,16 +148,19 @@ def _shift_row(shift_id: str, provider_id: str, facility_id: str, start: pd.Time
 
 def _role_pressure_blocks(rng: np.random.Generator, days: int, multiplier: float) -> dict[str, set[pd.Timestamp]]:
     blocks = {role: set() for role in ROLES}
+    intensity = _pressure_intensity(multiplier)
+    if intensity <= 0:
+        return blocks
     for day in range(days):
         date = pd.Timestamp("2025-01-01") + pd.Timedelta(days=day)
         weekend = int(date.dayofweek) >= 5
         heatwave = 10 <= date.day <= 13
         flu_surge = date.day >= 20
         role_prob = {
-            "md": min(0.42, (0.16 + 0.06 * weekend + 0.06 * heatwave + 0.06 * flu_surge) * multiplier),
-            "np": min(0.30, (0.10 + 0.04 * weekend + 0.04 * heatwave + 0.04 * flu_surge) * multiplier),
-            "rn": min(0.52, (0.24 + 0.08 * weekend + 0.08 * heatwave + 0.09 * flu_surge) * multiplier),
-            "hcw": min(0.46, (0.20 + 0.07 * weekend + 0.08 * heatwave + 0.07 * flu_surge) * multiplier),
+            "md": min(0.42, (0.07 + 0.05 * weekend + 0.07 * heatwave + 0.08 * flu_surge) * intensity),
+            "np": min(0.30, (0.04 + 0.03 * weekend + 0.04 * heatwave + 0.05 * flu_surge) * intensity),
+            "rn": min(0.52, (0.12 + 0.08 * weekend + 0.10 * heatwave + 0.12 * flu_surge) * intensity),
+            "hcw": min(0.46, (0.10 + 0.07 * weekend + 0.09 * heatwave + 0.10 * flu_surge) * intensity),
         }
         for role, prob in role_prob.items():
             if rng.random() >= prob:
@@ -186,9 +191,45 @@ def _core_capacity_for_hour(hour: int) -> dict[str, float]:
     }
 
 
+def _pressure_intensity(multiplier: float) -> float:
+    raw = float(np.clip((float(multiplier) - 1.05) / 0.30, 0.0, 1.45))
+    return float(raw**2.0)
+
+
+def _pressure_regime(multiplier: float) -> str:
+    if multiplier <= 1.05:
+        return "normal"
+    if multiplier < 1.35:
+        return "moderate"
+    return "surge"
+
+
+def _role_load_ratio(role: str, pressure_intensity: float, pressure_score: float, rng: np.random.Generator) -> float:
+    normal_variation = float(np.clip(rng.normal(0.0, 0.035), -0.07, 0.07))
+    baseline = ROLE_BASE_UTILIZATION[role] + normal_variation
+    surge_load = pressure_intensity * ROLE_SURGE_SENSITIVITY[role] * (0.55 + pressure_score)
+    return float(np.clip(baseline + surge_load, 0.0, 1.85))
+
+
+def _sample_required_for_role(core_capacity: float, load_ratio: float, pressure_intensity: float, rng: np.random.Generator) -> int:
+    core_units = int(round(core_capacity))
+    if core_units <= 0:
+        return 0
+    if load_ratio <= 1.0:
+        required = int(rng.binomial(core_units, min(0.98, max(0.0, load_ratio))))
+        return min(core_units, required)
+    extra_pressure = min(0.95, max(0.0, load_ratio - 1.0))
+    extra = int(rng.random() < extra_pressure)
+    if pressure_intensity >= 1.0 and rng.random() < max(0.0, extra_pressure - 0.28):
+        extra += 1
+    return core_units + extra
+
+
 def generate_canonical_mock(seed: int, facilities: int, days: int, budget_shares: dict[str, float], out_dir: Path, overflow_shift_hours: int = 10, demand_pressure_multiplier: float = 1.0) -> dict[str, Path]:
     rng = np.random.default_rng(seed)
     hours = _date_range(days)
+    pressure_intensity = _pressure_intensity(demand_pressure_multiplier)
+    pressure_regime = _pressure_regime(demand_pressure_multiplier)
     facility_ids = [f"FAC_{i:03d}" for i in range(facilities)]
     evh_rows: list[dict] = []
     rav_rows: list[dict] = []
@@ -244,12 +285,30 @@ def generate_canonical_mock(seed: int, facilities: int, days: int, budget_shares
             pressure = 0.02 + 0.03 * evening + 0.02 * weekend + 0.04 * heatwave + 0.04 * flu_surge + 0.03 * ambulance_surge
             pressure = float(np.clip(pressure + np.clip(rng.normal(0.0, 0.025), -0.03, 0.05), 0.0, 0.12))
             surge_probability = float(np.clip((pressure * 0.35 + max(0.0, wait_risk_proxy - 3.5) * 0.03) * demand_pressure_multiplier, 0.0, 0.06))
+            pressure_score = float(
+                np.clip(
+                    0.08 * evening
+                    + 0.05 * weekend
+                    + 0.12 * heatwave
+                    + 0.14 * flu_surge
+                    + 0.10 * ambulance_surge
+                    + min(0.18, wait_risk_proxy * 0.025)
+                    + pressure,
+                    0.0,
+                    0.70,
+                )
+            )
             required = {}
             for role in ROLES:
-                block_extra = int(ts in pressure_blocks[role]) if core[role] > 0 else 0
-                random_extra = int(rng.random() < surge_probability * {"md": 1.0, "np": 0.6, "rn": 1.2, "hcw": 1.0}[role]) if core[role] > 0 else 0
-                edge_gap = int(core[role] <= 0 and rng.random() < {"md": 0.025, "np": 0.015, "rn": 0.018, "hcw": 0.018}[role])
-                required[role] = int(max(0, core[role] + block_extra + random_extra + edge_gap))
+                load_ratio = _role_load_ratio(role, pressure_intensity, pressure_score, rng)
+                role_required = _sample_required_for_role(core[role], load_ratio, pressure_intensity, rng)
+                if core[role] > 0 and ts in pressure_blocks[role]:
+                    role_required += 1
+                if core[role] > 0 and rng.random() < surge_probability * pressure_intensity * {"md": 0.7, "np": 0.5, "rn": 1.0, "hcw": 0.85}[role]:
+                    role_required += 1
+                edge_gap_prob = pressure_intensity * {"md": 0.010, "np": 0.006, "rn": 0.008, "hcw": 0.008}[role]
+                edge_gap = int(core[role] <= 0 and rng.random() < edge_gap_prob)
+                required[role] = int(max(0, role_required + edge_gap))
             rav_rows.append(
                 {
                     "date": ts.date().isoformat(),
@@ -341,7 +400,27 @@ def generate_canonical_mock(seed: int, facilities: int, days: int, budget_shares
     for key, df in [("EVH", evh), ("PSH", psh), ("RAV", rav), ("USS", uss), ("ASS", ass), ("SRR", srr), ("manual", manual)]:
         _write_table(df, paths[key])
     core = _core_hours_by_role(psh)
-    meta = {"seed": seed, "facilities": facilities, "days": days, "overflow_budget_shares": budget_shares, "core_monthly_provider_hours_by_role": core, "overflow_budget_hours_by_role": {r: core[r] * budget_shares[r] for r in ROLES}, "overflow_shift_hours": int(overflow_shift_hours), "demand_pressure_multiplier": float(demand_pressure_multiplier), "rows": {k: int(len(_load_table(v))) for k, v in paths.items()}}
+    total_required_by_role = {role: float(ass[f"actual_required_{role}"].sum()) for role in ROLES}
+    slack_hours_by_role = {role: max(0.0, core[role] - total_required_by_role[role]) for role in ROLES}
+    static_gap_hours_by_role = {role: float((ass[f"actual_required_{role}"] - ass["timestamp_hour"].dt.hour.map(lambda hour: _core_capacity_for_hour(int(hour))[role])).clip(lower=0.0).sum()) for role in ROLES}
+    meta = {
+        "seed": seed,
+        "facilities": facilities,
+        "days": days,
+        "overflow_budget_shares": budget_shares,
+        "core_monthly_provider_hours_by_role": core,
+        "overflow_budget_hours_by_role": {r: core[r] * budget_shares[r] for r in ROLES},
+        "overflow_shift_hours": int(overflow_shift_hours),
+        "demand_pressure_multiplier": float(demand_pressure_multiplier),
+        "pressure_regime": pressure_regime,
+        "pressure_intensity": pressure_intensity,
+        "total_required_provider_hours_by_role": total_required_by_role,
+        "slack_hours_by_role": slack_hours_by_role,
+        "slack_pct_by_role": {role: float(slack_hours_by_role[role] / max(1.0, core[role])) for role in ROLES},
+        "pre_overflow_gap_hours_by_role": static_gap_hours_by_role,
+        "pre_overflow_gap_hours": float(sum(static_gap_hours_by_role.values())),
+        "rows": {k: int(len(_load_table(v))) for k, v in paths.items()},
+    }
     meta_path = out_dir / "fixed_rotation_overflow.meta.json"
     meta_path.write_text(json.dumps(meta, indent=2), encoding="utf-8")
     paths["meta"] = meta_path
@@ -573,7 +652,20 @@ def optimize_overflow(paths: dict[str, Path], ptd_path: Path, out_dir: Path, bud
     psp = pd.DataFrame(psp_rows)
     summary = pd.DataFrame(summaries)
     comparison = pd.DataFrame(comparison_rows)
-    need_detail_df = pd.DataFrame(need_detail_rows)
+    need_detail_cols = [
+        "scenario_name",
+        "facility_id",
+        "timestamp_hour",
+        "department_id",
+        "actual_patient_volume",
+        "waiting_room_count",
+        "wait_risk_proxy",
+        "recommended_total_overflow_needed",
+        "priority_tier",
+    ]
+    for role in ROLES:
+        need_detail_cols.extend([f"actual_required_{role}", f"core_{role}_coverage", f"optimized_overflow_{role}_coverage", f"remaining_{role}_gap", f"recommended_{role}_overflow_needed"])
+    need_detail_df = pd.DataFrame(need_detail_rows, columns=need_detail_cols)
     psp_path = out_dir / "planned_schedule_table.parquet"
     summary_path = out_dir / "overflow_reallocation_summary.csv"
     comparison_path = out_dir / "manual_vs_optimized_overflow.csv"

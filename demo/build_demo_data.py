@@ -17,6 +17,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--results-root", required=True, help="Fixed-rotation workflow output directory.")
     parser.add_argument("--out", default="demo/data/demo_case.json")
     parser.add_argument("--scenario", default="tabfm_guarded")
+    parser.add_argument(
+        "--pressure-scenario",
+        action="append",
+        default=[],
+        metavar="LABEL=MULTIPLIER=PATH",
+        help="Additional calibrated pressure run to embed, for example normal=1.00=outputs/calibration_normal.",
+    )
     parser.add_argument("--top-actions", type=int, default=8)
     return parser.parse_args()
 
@@ -121,6 +128,8 @@ def _comparison(comparison: pd.DataFrame, scenario: str) -> list[dict[str, Any]]
 
 
 def _top_actions(psp: pd.DataFrame, scenario: str, limit: int) -> list[dict[str, Any]]:
+    if psp.empty or "scenario_name" not in psp.columns:
+        return []
     data = psp[psp["scenario_name"] == scenario].copy()
     if data.empty:
         return []
@@ -144,8 +153,12 @@ def _top_actions(psp: pd.DataFrame, scenario: str, limit: int) -> list[dict[str,
 
 def _schedule_rows(df: pd.DataFrame, scenario: str | None, limit: int = 16) -> list[dict[str, Any]]:
     data = df.copy()
+    if data.empty:
+        return []
     if scenario is not None and "scenario_name" in data.columns:
         data = data[data["scenario_name"] == scenario].copy()
+    elif scenario is not None:
+        return []
     start_col = "planned_activation_start" if "planned_activation_start" in data.columns else "shift_start"
     end_col = "planned_activation_end" if "planned_activation_end" in data.columns else "shift_end"
     priority_col = "priority_tier" if "priority_tier" in data.columns else None
@@ -193,7 +206,57 @@ def _parameter_defaults(row: pd.Series) -> dict[str, Any]:
     }
 
 
-def build_payload(results_root: Path, preferred_scenario: str, top_actions: int) -> dict[str, Any]:
+def _parse_pressure_scenario(value: str) -> tuple[str, float, Path]:
+    parts = value.split("=", 2)
+    if len(parts) != 3:
+        raise ValueError(f"Invalid --pressure-scenario {value!r}; expected LABEL=MULTIPLIER=PATH")
+    label, multiplier, path = parts
+    return label, float(multiplier), Path(path)
+
+
+def _pressure_sample(results_root: Path, preferred_scenario: str, top_actions: int, label: str | None = None, multiplier: float | None = None) -> dict[str, Any]:
+    summary = _read_csv(results_root / "overflow_reallocation_summary.csv")
+    comparison = _read_csv(results_root / "manual_vs_optimized_overflow.csv")
+    need_detail = _read_csv(results_root / "recommended_overflow_capacity_needed_by_hour.csv")
+    psp = _read_parquet(results_root / "planned_schedule_table.parquet")
+    meta_path = results_root / "fixed_rotation_overflow.meta.json"
+    meta = json.loads(meta_path.read_text(encoding="utf-8")) if meta_path.exists() else {}
+    scenario = _pick_scenario(summary, preferred_scenario)
+    row = summary[summary["scenario_name"] == scenario].iloc[0]
+    manual_shortage = _safe_float(row["manual_shortage_hours"])
+    optimized_shortage = _safe_float(row["optimized_shortage_hours"])
+    shortage_reduction = _safe_float(row["shortage_reduction_vs_manual"])
+    coverage_reduction = _safe_float(row["coverage_risk_reduction_vs_manual"])
+    wait_risk_reduction = _safe_float(row["wait_risk_proxy_reduction_vs_manual"])
+    pressure_multiplier = float(multiplier if multiplier is not None else meta.get("demand_pressure_multiplier", 1.0))
+    return {
+        "label": label or str(meta.get("pressure_regime", scenario)),
+        "pressureMultiplier": pressure_multiplier,
+        "pressureRegime": str(meta.get("pressure_regime", "")),
+        "scenario": scenario,
+        "preOverflowGapHours": round(_safe_float(meta.get("pre_overflow_gap_hours", row.get("static_shortage_hours", 0.0))), 1),
+        "slackPctByRole": {ROLE_LABELS.get(role, role.upper()): round(_safe_float(value) * 100, 1) for role, value in dict(meta.get("slack_pct_by_role", {})).items()},
+        "kpis": {
+            "shortageAvoided": round(shortage_reduction, 1),
+            "coverageRiskAvoided": round(coverage_reduction, 1),
+            "waitRiskReduced": round(wait_risk_reduction, 1),
+            "manualShortage": round(manual_shortage, 1),
+            "optimizedShortage": round(optimized_shortage, 1),
+            "manualCoverageRisk": _safe_int(row["manual_coverage_risk_hours"]),
+            "optimizedCoverageRisk": _safe_int(row["optimized_coverage_risk_hours"]),
+            "budgetHours": round(_safe_float(row["total_overflow_budget_hours"]), 1),
+            "usedHours": round(_safe_float(row["total_optimized_overflow_hours_used"]), 1),
+            "budgetExceeded": bool(row["budget_exceeded"]),
+        },
+        "comparison": _comparison(comparison, scenario),
+        "roleBudgets": _role_budget(row),
+        "remainingGaps": _remaining_gaps(need_detail, scenario),
+        "topActions": _top_actions(psp, scenario, top_actions),
+        "optimizedSchedule": _schedule_rows(psp, scenario, limit=16),
+    }
+
+
+def build_payload(results_root: Path, preferred_scenario: str, top_actions: int, pressure_scenarios: list[tuple[str, float, Path]] | None = None) -> dict[str, Any]:
     summary = _read_csv(results_root / "overflow_reallocation_summary.csv")
     comparison = _read_csv(results_root / "manual_vs_optimized_overflow.csv")
     need_detail = _read_csv(results_root / "recommended_overflow_capacity_needed_by_hour.csv")
@@ -211,6 +274,11 @@ def build_payload(results_root: Path, preferred_scenario: str, top_actions: int)
     coverage_reduction = _safe_float(row["coverage_risk_reduction_vs_manual"])
     wait_risk_reduction = _safe_float(row["wait_risk_proxy_reduction_vs_manual"])
 
+    pressure_samples = [_pressure_sample(results_root, preferred_scenario, top_actions)]
+    for label, multiplier, path in pressure_scenarios or []:
+        pressure_samples.append(_pressure_sample(path, preferred_scenario, top_actions, label=label, multiplier=multiplier))
+    deduped_samples = {round(float(item["pressureMultiplier"]), 4): item for item in pressure_samples}
+    pressure_samples = [deduped_samples[key] for key in sorted(deduped_samples)]
     return {
         "generatedFrom": str(results_root),
         "scenario": scenario,
@@ -256,6 +324,7 @@ def build_payload(results_root: Path, preferred_scenario: str, top_actions: int)
         "initialSchedule": _schedule_rows(psh, None, limit=16),
         "optimizedSchedule": _schedule_rows(psp, scenario, limit=16),
         "parameters": _parameter_defaults(row),
+        "pressureScenarios": pressure_samples,
         "plainLanguage": {
             "problem": "The standing schedule is protected. The business case is whether funded overflow can be placed earlier and more precisely.",
             "manual": "Original call-outs react after visible pressure appears, which can miss the right role, site, or hour.",
@@ -269,7 +338,8 @@ def main() -> None:
     args = parse_args()
     results_root = Path(args.results_root)
     out = Path(args.out)
-    payload = build_payload(results_root, args.scenario, args.top_actions)
+    pressure_scenarios = [_parse_pressure_scenario(value) for value in args.pressure_scenario]
+    payload = build_payload(results_root, args.scenario, args.top_actions, pressure_scenarios)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(payload, indent=2), encoding="utf-8")
     print(f"Wrote {out}")

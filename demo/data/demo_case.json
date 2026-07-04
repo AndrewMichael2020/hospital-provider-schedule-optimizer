@@ -1,5 +1,5 @@
 {
-  "generatedFrom": "outputs/fixed_rotation_overflow_multirole_funded10_v1",
+  "generatedFrom": "outputs/calibration_surge",
   "scenario": "tabfm_guarded",
   "case": {
     "title": "Funded overflow, placed before the surge",
@@ -13,19 +13,19 @@
   "kpis": [
     {
       "label": "Shortage hours avoided",
-      "value": 496,
+      "value": 221,
       "unit": "hours",
-      "note": "Original 877 -> optimized 381"
+      "note": "Original 1708 -> optimized 1487"
     },
     {
       "label": "Coverage-risk hours avoided",
-      "value": 350,
+      "value": 55,
       "unit": "hours",
       "note": "Hours with any remaining role shortage"
     },
     {
       "label": "Wait-risk proxy reduced",
-      "value": 191.7,
+      "value": 9.0,
       "unit": "points",
       "note": "Only counted during shortage periods"
     },
@@ -33,36 +33,36 @@
       "label": "Budget status",
       "value": "Pass",
       "unit": "",
-      "note": "1200 of 1285 role-hours used"
+      "note": "1070 of 1285 role-hours used"
     }
   ],
   "comparison": [
     {
       "mode": "Fixed rotation only",
-      "shortageHours": 1123.0,
-      "coverageRiskHours": 873,
-      "waitRiskProxy": 533.3
+      "shortageHours": 2156.0,
+      "coverageRiskHours": 1499,
+      "waitRiskProxy": 731.1
     },
     {
       "mode": "Original overflow",
-      "shortageHours": 877.0,
-      "coverageRiskHours": 704,
-      "waitRiskProxy": 396.6
+      "shortageHours": 1708.0,
+      "coverageRiskHours": 1266,
+      "waitRiskProxy": 591.5
     },
     {
       "mode": "Optimized overflow",
-      "shortageHours": 381.0,
-      "coverageRiskHours": 354,
-      "waitRiskProxy": 205.0
+      "shortageHours": 1487.0,
+      "coverageRiskHours": 1211,
+      "waitRiskProxy": 582.5
     }
   ],
   "roleBudgets": [
     {
       "role": "MD",
       "budgetHours": 364.0,
-      "usedHours": 290.0,
-      "remainingHours": 74.0,
-      "usedPct": 79.7,
+      "usedHours": 160.0,
+      "remainingHours": 204.0,
+      "usedPct": 44.0,
       "overBudget": false
     },
     {
@@ -93,89 +93,89 @@
   "remainingGaps": [
     {
       "role": "MD",
-      "remainingGapHours": 89.0,
-      "pressureHours": 87
+      "remainingGapHours": 175.0,
+      "pressureHours": 171
     },
     {
       "role": "NP",
-      "remainingGapHours": 78.0,
-      "pressureHours": 76
+      "remainingGapHours": 49.0,
+      "pressureHours": 48
     },
     {
       "role": "RN",
-      "remainingGapHours": 114.0,
-      "pressureHours": 113
+      "remainingGapHours": 738.0,
+      "pressureHours": 695
     },
     {
       "role": "HCW",
-      "remainingGapHours": 100.0,
-      "pressureHours": 97
+      "remainingGapHours": 525.0,
+      "pressureHours": 510
     }
   ],
   "topActions": [
     {
       "facility": "FAC_002",
+      "role": "RN",
+      "window": "Jan 25, 2 PM to Jan 26, 12 AM",
+      "priority": "P1",
+      "expectedHit": true,
+      "score": 18.08
+    },
+    {
+      "facility": "FAC_003",
+      "role": "RN",
+      "window": "Jan 25, 2 PM to Jan 26, 12 AM",
+      "priority": "P1",
+      "expectedHit": true,
+      "score": 17.77
+    },
+    {
+      "facility": "FAC_000",
+      "role": "RN",
+      "window": "Jan 13, 8 AM to Jan 13, 6 PM",
+      "priority": "P1",
+      "expectedHit": true,
+      "score": 17.37
+    },
+    {
+      "facility": "FAC_001",
       "role": "MD",
-      "window": "Jan 25, 10 AM to Jan 25, 8 PM",
+      "window": "Jan 23, 10 AM to Jan 23, 8 PM",
       "priority": "P1",
       "expectedHit": true,
-      "score": 18.59
-    },
-    {
-      "facility": "FAC_003",
-      "role": "RN",
-      "window": "Jan 20, 2 PM to Jan 21, 12 AM",
-      "priority": "P1",
-      "expectedHit": true,
-      "score": 15.97
-    },
-    {
-      "facility": "FAC_002",
-      "role": "RN",
-      "window": "Jan 19, 8 AM to Jan 19, 6 PM",
-      "priority": "P1",
-      "expectedHit": true,
-      "score": 15.44
-    },
-    {
-      "facility": "FAC_003",
-      "role": "RN",
-      "window": "Jan 18, 2 PM to Jan 19, 12 AM",
-      "priority": "P1",
-      "expectedHit": true,
-      "score": 15.36
-    },
-    {
-      "facility": "FAC_002",
-      "role": "MD",
-      "window": "Jan 26, 2 PM to Jan 27, 12 AM",
-      "priority": "P1",
-      "expectedHit": true,
-      "score": 15.34
-    },
-    {
-      "facility": "FAC_003",
-      "role": "MD",
-      "window": "Jan 11, 10 AM to Jan 11, 8 PM",
-      "priority": "P1",
-      "expectedHit": true,
-      "score": 15.22
-    },
-    {
-      "facility": "FAC_003",
-      "role": "RN",
-      "window": "Jan 10, 2 PM to Jan 11, 12 AM",
-      "priority": "P1",
-      "expectedHit": true,
-      "score": 15.11
+      "score": 17.26
     },
     {
       "facility": "FAC_001",
       "role": "RN",
-      "window": "Jan 13, 2 PM to Jan 14, 12 AM",
+      "window": "Jan 20, 2 PM to Jan 21, 12 AM",
       "priority": "P1",
       "expectedHit": true,
-      "score": 14.82
+      "score": 16.25
+    },
+    {
+      "facility": "FAC_003",
+      "role": "RN",
+      "window": "Jan 30, 2 PM to Jan 31, 12 AM",
+      "priority": "P1",
+      "expectedHit": true,
+      "score": 16.25
+    },
+    {
+      "facility": "FAC_003",
+      "role": "RN",
+      "window": "Jan 21, 2 PM to Jan 22, 12 AM",
+      "priority": "P1",
+      "expectedHit": true,
+      "score": 15.58
+    },
+    {
+      "facility": "FAC_003",
+      "role": "RN",
+      "window": "Jan 25, 8 AM to Jan 25, 6 PM",
+      "priority": "P1",
+      "expectedHit": true,
+      "score": 15.29
     }
   ],
   "initialSchedule": [
@@ -375,23 +375,59 @@
   "optimizedSchedule": [
     {
       "facility": "FAC_001",
-      "department": "ER_MAIN",
-      "role": "MD",
-      "line": "PSP tabfm guarded 00011",
-      "start": "Jan 1, 10 AM",
-      "end": "Jan 1, 8 PM",
+      "department": "ER_FAST_TRACK",
+      "role": "NP",
+      "line": "PSP tabfm guarded 00063",
+      "start": "Jan 1, 12 PM",
+      "end": "Jan 1, 10 PM",
       "hours": 10.0,
       "priority": "P1",
-      "score": 14.29,
+      "score": 10.19,
+      "status": "Add overflow"
+    },
+    {
+      "facility": "FAC_001",
+      "department": "ER_MAIN",
+      "role": "HCW",
+      "line": "PSP tabfm guarded 00065",
+      "start": "Jan 1, 2 PM",
+      "end": "Jan 2, 12 AM",
+      "hours": 10.0,
+      "priority": "P1",
+      "score": 10.13,
+      "status": "Add overflow"
+    },
+    {
+      "facility": "FAC_000",
+      "department": "ER_MAIN",
+      "role": "RN",
+      "line": "PSP tabfm guarded 00053",
+      "start": "Jan 1, 8 PM",
+      "end": "Jan 2, 6 AM",
+      "hours": 10.0,
+      "priority": "P1",
+      "score": 10.71,
+      "status": "Add overflow"
+    },
+    {
+      "facility": "FAC_003",
+      "department": "ER_MAIN",
+      "role": "MD",
+      "line": "PSP tabfm guarded 00037",
+      "start": "Jan 2, 10 AM",
+      "end": "Jan 2, 8 PM",
+      "hours": 10.0,
+      "priority": "P1",
+      "score": 12.03,
       "status": "Add overflow"
     },
     {
       "facility": "FAC_001",
       "department": "ER_FAST_TRACK",
       "role": "NP",
-      "line": "PSP tabfm guarded 00096",
-      "start": "Jan 1, 12 PM",
-      "end": "Jan 1, 10 PM",
+      "line": "PSP tabfm guarded 00086",
+      "start": "Jan 2, 12 PM",
+      "end": "Jan 2, 10 PM",
       "hours": 10.0,
       "priority": "P1",
       "score": 8.35,
@@ -400,157 +436,37 @@
     {
       "facility": "FAC_002",
       "department": "ER_MAIN",
-      "role": "RN",
-      "line": "PSP tabfm guarded 00073",
-      "start": "Jan 1, 2 PM",
-      "end": "Jan 2, 12 AM",
-      "hours": 10.0,
-      "priority": "P1",
-      "score": 9.32,
-      "status": "Add overflow"
-    },
-    {
-      "facility": "FAC_000",
-      "department": "ER_MAIN",
       "role": "MD",
-      "line": "PSP tabfm guarded 00034",
-      "start": "Jan 2, 10 AM",
-      "end": "Jan 2, 8 PM",
-      "hours": 10.0,
-      "priority": "P1",
-      "score": 11.95,
-      "status": "Add overflow"
-    },
-    {
-      "facility": "FAC_003",
-      "department": "ER_FAST_TRACK",
-      "role": "NP",
-      "line": "PSP tabfm guarded 00081",
-      "start": "Jan 2, 12 PM",
-      "end": "Jan 2, 10 PM",
-      "hours": 10.0,
-      "priority": "P1",
-      "score": 9.07,
-      "status": "Add overflow"
-    },
-    {
-      "facility": "FAC_003",
-      "department": "ER_MAIN",
-      "role": "RN",
-      "line": "PSP tabfm guarded 00014",
+      "line": "PSP tabfm guarded 00070",
       "start": "Jan 2, 2 PM",
       "end": "Jan 3, 12 AM",
       "hours": 10.0,
       "priority": "P1",
-      "score": 13.92,
-      "status": "Add overflow"
-    },
-    {
-      "facility": "FAC_003",
-      "department": "ER_MAIN",
-      "role": "MD",
-      "line": "PSP tabfm guarded 00037",
-      "start": "Jan 3, 10 AM",
-      "end": "Jan 3, 8 PM",
-      "hours": 10.0,
-      "priority": "P1",
-      "score": 11.51,
+      "score": 9.98,
       "status": "Add overflow"
     },
     {
       "facility": "FAC_000",
-      "department": "ER_MAIN",
-      "role": "HCW",
-      "line": "PSP tabfm guarded 00117",
-      "start": "Jan 3, 2 PM",
-      "end": "Jan 4, 12 AM",
+      "department": "ER_FAST_TRACK",
+      "role": "NP",
+      "line": "PSP tabfm guarded 00085",
+      "start": "Jan 4, 12 PM",
+      "end": "Jan 4, 10 PM",
       "hours": 10.0,
-      "priority": "P2",
-      "score": 6.97,
+      "priority": "P1",
+      "score": 8.48,
       "status": "Add overflow"
     },
     {
       "facility": "FAC_003",
       "department": "ER_MAIN",
-      "role": "RN",
-      "line": "PSP tabfm guarded 00072",
-      "start": "Jan 3, 2 PM",
-      "end": "Jan 4, 12 AM",
-      "hours": 10.0,
-      "priority": "P1",
-      "score": 9.37,
-      "status": "Add overflow"
-    },
-    {
-      "facility": "FAC_002",
-      "department": "ER_MAIN",
-      "role": "MD",
-      "line": "PSP tabfm guarded 00070",
+      "role": "HCW",
+      "line": "PSP tabfm guarded 00081",
       "start": "Jan 4, 2 PM",
       "end": "Jan 5, 12 AM",
       "hours": 10.0,
       "priority": "P1",
-      "score": 9.41,
-      "status": "Add overflow"
-    },
-    {
-      "facility": "FAC_000",
-      "department": "ER_MAIN",
-      "role": "HCW",
-      "line": "PSP tabfm guarded 00094",
-      "start": "Jan 5, 8 AM",
-      "end": "Jan 5, 6 PM",
-      "hours": 10.0,
-      "priority": "P1",
-      "score": 8.38,
-      "status": "Add overflow"
-    },
-    {
-      "facility": "FAC_001",
-      "department": "ER_MAIN",
-      "role": "RN",
-      "line": "PSP tabfm guarded 00030",
-      "start": "Jan 5, 8 AM",
-      "end": "Jan 5, 6 PM",
-      "hours": 10.0,
-      "priority": "P1",
-      "score": 12.48,
-      "status": "Add overflow"
-    },
-    {
-      "facility": "FAC_002",
-      "department": "ER_MAIN",
-      "role": "MD",
-      "line": "PSP tabfm guarded 00029",
-      "start": "Jan 5, 10 AM",
-      "end": "Jan 5, 8 PM",
-      "hours": 10.0,
-      "priority": "P1",
-      "score": 12.51,
-      "status": "Add overflow"
-    },
-    {
-      "facility": "FAC_002",
-      "department": "ER_MAIN",
-      "role": "RN",
-      "line": "PSP tabfm guarded 00022",
-      "start": "Jan 5, 2 PM",
-      "end": "Jan 6, 12 AM",
-      "hours": 10.0,
-      "priority": "P1",
-      "score": 13.37,
-      "status": "Add overflow"
-    },
-    {
-      "facility": "FAC_002",
-      "department": "ER_MAIN",
-      "role": "RN",
-      "line": "PSP tabfm guarded 00041",
-      "start": "Jan 6, 2 PM",
-      "end": "Jan 7, 12 AM",
-      "hours": 10.0,
-      "priority": "P1",
-      "score": 10.8,
+      "score": 9.03,
       "status": "Add overflow"
     },
     {
@@ -558,11 +474,95 @@
       "department": "ER_MAIN",
       "role": "RN",
       "line": "PSP tabfm guarded 00074",
-      "start": "Jan 7, 2 PM",
-      "end": "Jan 8, 12 AM",
+      "start": "Jan 4, 8 PM",
+      "end": "Jan 5, 6 AM",
       "hours": 10.0,
       "priority": "P1",
-      "score": 9.24,
+      "score": 9.78,
+      "status": "Add overflow"
+    },
+    {
+      "facility": "FAC_001",
+      "department": "ER_MAIN",
+      "role": "MD",
+      "line": "PSP tabfm guarded 00042",
+      "start": "Jan 5, 10 AM",
+      "end": "Jan 5, 8 PM",
+      "hours": 10.0,
+      "priority": "P1",
+      "score": 11.92,
+      "status": "Add overflow"
+    },
+    {
+      "facility": "FAC_001",
+      "department": "ER_MAIN",
+      "role": "HCW",
+      "line": "PSP tabfm guarded 00084",
+      "start": "Jan 6, 8 AM",
+      "end": "Jan 6, 6 PM",
+      "hours": 10.0,
+      "priority": "P1",
+      "score": 8.57,
+      "status": "Add overflow"
+    },
+    {
+      "facility": "FAC_003",
+      "department": "ER_MAIN",
+      "role": "RN",
+      "line": "PSP tabfm guarded 00019",
+      "start": "Jan 10, 8 AM",
+      "end": "Jan 10, 6 PM",
+      "hours": 10.0,
+      "priority": "P1",
+      "score": 13.17,
+      "status": "Add overflow"
+    },
+    {
+      "facility": "FAC_003",
+      "department": "ER_MAIN",
+      "role": "HCW",
+      "line": "PSP tabfm guarded 00095",
+      "start": "Jan 10, 2 PM",
+      "end": "Jan 11, 12 AM",
+      "hours": 10.0,
+      "priority": "P2",
+      "score": 7.14,
+      "status": "Add overflow"
+    },
+    {
+      "facility": "FAC_000",
+      "department": "ER_MAIN",
+      "role": "HCW",
+      "line": "PSP tabfm guarded 00099",
+      "start": "Jan 11, 8 AM",
+      "end": "Jan 11, 6 PM",
+      "hours": 10.0,
+      "priority": "P2",
+      "score": 6.55,
+      "status": "Add overflow"
+    },
+    {
+      "facility": "FAC_003",
+      "department": "ER_MAIN",
+      "role": "RN",
+      "line": "PSP tabfm guarded 00033",
+      "start": "Jan 11, 8 AM",
+      "end": "Jan 11, 6 PM",
+      "hours": 10.0,
+      "priority": "P1",
+      "score": 12.32,
+      "status": "Add overflow"
+    },
+    {
+      "facility": "FAC_001",
+      "department": "ER_MAIN",
+      "role": "MD",
+      "line": "PSP tabfm guarded 00061",
+      "start": "Jan 11, 10 AM",
+      "end": "Jan 11, 8 PM",
+      "hours": 10.0,
+      "priority": "P1",
+      "score": 10.21,
       "status": "Add overflow"
     }
   ],
@@ -571,11 +571,1199 @@
     "surgeMultiplier": 135,
     "minimumCoveredGapHours": 4,
     "overflowShiftHours": 10,
-    "baselineManualShortageHours": 877.0,
-    "baseOptimizedShortageHours": 381.0,
+    "baselineManualShortageHours": 1708.0,
+    "baseOptimizedShortageHours": 1487.0,
     "baseBudgetHours": 1284.8,
-    "baseUsedHours": 1200.0
+    "baseUsedHours": 1070.0
   },
+  "pressureScenarios": [
+    {
+      "label": "normal",
+      "pressureMultiplier": 1.0,
+      "pressureRegime": "normal",
+      "scenario": "tabfm_guarded",
+      "preOverflowGapHours": 0.0,
+      "slackPctByRole": {
+        "MD": 23.3,
+        "NP": 26.6,
+        "RN": 17.3,
+        "HCW": 19.0
+      },
+      "kpis": {
+        "shortageAvoided": 0.0,
+        "coverageRiskAvoided": 0.0,
+        "waitRiskReduced": 0.0,
+        "manualShortage": 0.0,
+        "optimizedShortage": 0.0,
+        "manualCoverageRisk": 0,
+        "optimizedCoverageRisk": 0,
+        "budgetHours": 1284.8,
+        "usedHours": 0.0,
+        "budgetExceeded": false
+      },
+      "comparison": [
+        {
+          "mode": "Fixed rotation only",
+          "shortageHours": 0.0,
+          "coverageRiskHours": 0,
+          "waitRiskProxy": 0.0
+        },
+        {
+          "mode": "Original overflow",
+          "shortageHours": 0.0,
+          "coverageRiskHours": 0,
+          "waitRiskProxy": 0.0
+        },
+        {
+          "mode": "Optimized overflow",
+          "shortageHours": 0.0,
+          "coverageRiskHours": 0,
+          "waitRiskProxy": 0.0
+        }
+      ],
+      "roleBudgets": [
+        {
+          "role": "MD",
+          "budgetHours": 364.0,
+          "usedHours": 0.0,
+          "remainingHours": 364.0,
+          "usedPct": 0.0,
+          "overBudget": false
+        },
+        {
+          "role": "NP",
+          "budgetHours": 120.0,
+          "usedHours": 0.0,
+          "remainingHours": 120.0,
+          "usedPct": 0.0,
+          "overBudget": false
+        },
+        {
+          "role": "RN",
+          "budgetHours": 436.8,
+          "usedHours": 0.0,
+          "remainingHours": 436.8,
+          "usedPct": 0.0,
+          "overBudget": false
+        },
+        {
+          "role": "HCW",
+          "budgetHours": 364.0,
+          "usedHours": 0.0,
+          "remainingHours": 364.0,
+          "usedPct": 0.0,
+          "overBudget": false
+        }
+      ],
+      "remainingGaps": [
+        {
+          "role": "MD",
+          "remainingGapHours": 0.0,
+          "pressureHours": 0
+        },
+        {
+          "role": "NP",
+          "remainingGapHours": 0.0,
+          "pressureHours": 0
+        },
+        {
+          "role": "RN",
+          "remainingGapHours": 0.0,
+          "pressureHours": 0
+        },
+        {
+          "role": "HCW",
+          "remainingGapHours": 0.0,
+          "pressureHours": 0
+        }
+      ],
+      "topActions": [],
+      "optimizedSchedule": []
+    },
+    {
+      "label": "moderate",
+      "pressureMultiplier": 1.25,
+      "pressureRegime": "moderate",
+      "scenario": "tabfm_guarded",
+      "preOverflowGapHours": 326.0,
+      "slackPctByRole": {
+        "MD": 11.1,
+        "NP": 12.0,
+        "RN": 0.0,
+        "HCW": 1.6
+      },
+      "kpis": {
+        "shortageAvoided": 30.0,
+        "coverageRiskAvoided": 29.0,
+        "waitRiskReduced": -1.5,
+        "manualShortage": 237.0,
+        "optimizedShortage": 207.0,
+        "manualCoverageRisk": 229,
+        "optimizedCoverageRisk": 200,
+        "budgetHours": 1284.8,
+        "usedHours": 220.0,
+        "budgetExceeded": false
+      },
+      "comparison": [
+        {
+          "mode": "Fixed rotation only",
+          "shortageHours": 326.0,
+          "coverageRiskHours": 311,
+          "waitRiskProxy": 160.3
+        },
+        {
+          "mode": "Original overflow",
+          "shortageHours": 237.0,
+          "coverageRiskHours": 229,
+          "waitRiskProxy": 102.8
+        },
+        {
+          "mode": "Optimized overflow",
+          "shortageHours": 207.0,
+          "coverageRiskHours": 200,
+          "waitRiskProxy": 104.3
+        }
+      ],
+      "roleBudgets": [
+        {
+          "role": "MD",
+          "budgetHours": 364.0,
+          "usedHours": 20.0,
+          "remainingHours": 344.0,
+          "usedPct": 5.5,
+          "overBudget": false
+        },
+        {
+          "role": "NP",
+          "budgetHours": 120.0,
+          "usedHours": 30.0,
+          "remainingHours": 90.0,
+          "usedPct": 25.0,
+          "overBudget": false
+        },
+        {
+          "role": "RN",
+          "budgetHours": 436.8,
+          "usedHours": 100.0,
+          "remainingHours": 336.8,
+          "usedPct": 22.9,
+          "overBudget": false
+        },
+        {
+          "role": "HCW",
+          "budgetHours": 364.0,
+          "usedHours": 70.0,
+          "remainingHours": 294.0,
+          "usedPct": 19.2,
+          "overBudget": false
+        }
+      ],
+      "remainingGaps": [
+        {
+          "role": "MD",
+          "remainingGapHours": 13.0,
+          "pressureHours": 13
+        },
+        {
+          "role": "NP",
+          "remainingGapHours": 15.0,
+          "pressureHours": 15
+        },
+        {
+          "role": "RN",
+          "remainingGapHours": 129.0,
+          "pressureHours": 127
+        },
+        {
+          "role": "HCW",
+          "remainingGapHours": 50.0,
+          "pressureHours": 50
+        }
+      ],
+      "topActions": [
+        {
+          "facility": "FAC_000",
+          "role": "RN",
+          "window": "Jan 19, 8 AM to Jan 19, 6 PM",
+          "priority": "P1",
+          "expectedHit": true,
+          "score": 12.01
+        },
+        {
+          "facility": "FAC_001",
+          "role": "RN",
+          "window": "Jan 26, 2 PM to Jan 27, 12 AM",
+          "priority": "P1",
+          "expectedHit": true,
+          "score": 10.96
+        },
+        {
+          "facility": "FAC_003",
+          "role": "RN",
+          "window": "Jan 26, 2 PM to Jan 27, 12 AM",
+          "priority": "P1",
+          "expectedHit": true,
+          "score": 9.51
+        },
+        {
+          "facility": "FAC_000",
+          "role": "MD",
+          "window": "Jan 16, 10 AM to Jan 16, 8 PM",
+          "priority": "P1",
+          "expectedHit": true,
+          "score": 9.46
+        },
+        {
+          "facility": "FAC_003",
+          "role": "RN",
+          "window": "Jan 11, 8 AM to Jan 11, 6 PM",
+          "priority": "P1",
+          "expectedHit": true,
+          "score": 9.3
+        },
+        {
+          "facility": "FAC_003",
+          "role": "RN",
+          "window": "Jan 18, 2 PM to Jan 19, 12 AM",
+          "priority": "P1",
+          "expectedHit": true,
+          "score": 9.27
+        },
+        {
+          "facility": "FAC_001",
+          "role": "MD",
+          "window": "Jan 6, 10 AM to Jan 6, 8 PM",
+          "priority": "P1",
+          "expectedHit": true,
+          "score": 9.24
+        },
+        {
+          "facility": "FAC_002",
+          "role": "RN",
+          "window": "Jan 3, 2 PM to Jan 4, 12 AM",
+          "priority": "P1",
+          "expectedHit": true,
+          "score": 9.17
+        }
+      ],
+      "optimizedSchedule": [
+        {
+          "facility": "FAC_001",
+          "department": "ER_MAIN",
+          "role": "HCW",
+          "line": "PSP tabfm guarded 00014",
+          "start": "Jan 2, 8 AM",
+          "end": "Jan 2, 6 PM",
+          "hours": 10.0,
+          "priority": "P2",
+          "score": 6.91,
+          "status": "Add overflow"
+        },
+        {
+          "facility": "FAC_002",
+          "department": "ER_MAIN",
+          "role": "RN",
+          "line": "PSP tabfm guarded 00007",
+          "start": "Jan 3, 2 PM",
+          "end": "Jan 4, 12 AM",
+          "hours": 10.0,
+          "priority": "P1",
+          "score": 9.17,
+          "status": "Add overflow"
+        },
+        {
+          "facility": "FAC_000",
+          "department": "ER_MAIN",
+          "role": "HCW",
+          "line": "PSP tabfm guarded 00013",
+          "start": "Jan 4, 2 PM",
+          "end": "Jan 5, 12 AM",
+          "hours": 10.0,
+          "priority": "P2",
+          "score": 6.97,
+          "status": "Add overflow"
+        },
+        {
+          "facility": "FAC_000",
+          "department": "ER_MAIN",
+          "role": "HCW",
+          "line": "PSP tabfm guarded 00017",
+          "start": "Jan 6, 8 AM",
+          "end": "Jan 6, 6 PM",
+          "hours": 10.0,
+          "priority": "P2",
+          "score": 5.91,
+          "status": "Add overflow"
+        },
+        {
+          "facility": "FAC_001",
+          "department": "ER_MAIN",
+          "role": "MD",
+          "line": "PSP tabfm guarded 00006",
+          "start": "Jan 6, 10 AM",
+          "end": "Jan 6, 8 PM",
+          "hours": 10.0,
+          "priority": "P1",
+          "score": 9.24,
+          "status": "Add overflow"
+        },
+        {
+          "facility": "FAC_001",
+          "department": "ER_MAIN",
+          "role": "RN",
+          "line": "PSP tabfm guarded 00016",
+          "start": "Jan 6, 2 PM",
+          "end": "Jan 7, 12 AM",
+          "hours": 10.0,
+          "priority": "P2",
+          "score": 6.03,
+          "status": "Add overflow"
+        },
+        {
+          "facility": "FAC_003",
+          "department": "ER_MAIN",
+          "role": "RN",
+          "line": "PSP tabfm guarded 00004",
+          "start": "Jan 11, 8 AM",
+          "end": "Jan 11, 6 PM",
+          "hours": 10.0,
+          "priority": "P1",
+          "score": 9.3,
+          "status": "Add overflow"
+        },
+        {
+          "facility": "FAC_000",
+          "department": "ER_FAST_TRACK",
+          "role": "NP",
+          "line": "PSP tabfm guarded 00020",
+          "start": "Jan 12, 12 PM",
+          "end": "Jan 12, 10 PM",
+          "hours": 10.0,
+          "priority": "P2",
+          "score": 5.37,
+          "status": "Add overflow"
+        },
+        {
+          "facility": "FAC_000",
+          "department": "ER_MAIN",
+          "role": "MD",
+          "line": "PSP tabfm guarded 00003",
+          "start": "Jan 16, 10 AM",
+          "end": "Jan 16, 8 PM",
+          "hours": 10.0,
+          "priority": "P1",
+          "score": 9.46,
+          "status": "Add overflow"
+        },
+        {
+          "facility": "FAC_001",
+          "department": "ER_MAIN",
+          "role": "RN",
+          "line": "PSP tabfm guarded 00009",
+          "start": "Jan 16, 2 PM",
+          "end": "Jan 17, 12 AM",
+          "hours": 10.0,
+          "priority": "P1",
+          "score": 9.02,
+          "status": "Add overflow"
+        },
+        {
+          "facility": "FAC_003",
+          "department": "ER_MAIN",
+          "role": "RN",
+          "line": "PSP tabfm guarded 00005",
+          "start": "Jan 18, 2 PM",
+          "end": "Jan 19, 12 AM",
+          "hours": 10.0,
+          "priority": "P1",
+          "score": 9.27,
+          "status": "Add overflow"
+        },
+        {
+          "facility": "FAC_000",
+          "department": "ER_MAIN",
+          "role": "RN",
+          "line": "PSP tabfm guarded 00000",
+          "start": "Jan 19, 8 AM",
+          "end": "Jan 19, 6 PM",
+          "hours": 10.0,
+          "priority": "P1",
+          "score": 12.01,
+          "status": "Add overflow"
+        },
+        {
+          "facility": "FAC_001",
+          "department": "ER_MAIN",
+          "role": "HCW",
+          "line": "PSP tabfm guarded 00021",
+          "start": "Jan 19, 2 PM",
+          "end": "Jan 20, 12 AM",
+          "hours": 10.0,
+          "priority": "P2",
+          "score": 4.6,
+          "status": "Add overflow"
+        },
+        {
+          "facility": "FAC_002",
+          "department": "ER_MAIN",
+          "role": "HCW",
+          "line": "PSP tabfm guarded 00011",
+          "start": "Jan 19, 2 PM",
+          "end": "Jan 20, 12 AM",
+          "hours": 10.0,
+          "priority": "P2",
+          "score": 7.19,
+          "status": "Add overflow"
+        },
+        {
+          "facility": "FAC_003",
+          "department": "ER_MAIN",
+          "role": "HCW",
+          "line": "PSP tabfm guarded 00015",
+          "start": "Jan 19, 2 PM",
+          "end": "Jan 20, 12 AM",
+          "hours": 10.0,
+          "priority": "P2",
+          "score": 6.9,
+          "status": "Add overflow"
+        },
+        {
+          "facility": "FAC_003",
+          "department": "ER_FAST_TRACK",
+          "role": "NP",
+          "line": "PSP tabfm guarded 00018",
+          "start": "Jan 25, 12 PM",
+          "end": "Jan 25, 10 PM",
+          "hours": 10.0,
+          "priority": "P2",
+          "score": 5.71,
+          "status": "Add overflow"
+        }
+      ]
+    },
+    {
+      "label": "surge",
+      "pressureMultiplier": 1.35,
+      "pressureRegime": "surge",
+      "scenario": "tabfm_guarded",
+      "preOverflowGapHours": 2156.0,
+      "slackPctByRole": {
+        "MD": 0.0,
+        "NP": 0.0,
+        "RN": 0.0,
+        "HCW": 0.0
+      },
+      "kpis": {
+        "shortageAvoided": 221.0,
+        "coverageRiskAvoided": 55.0,
+        "waitRiskReduced": 9.0,
+        "manualShortage": 1708.0,
+        "optimizedShortage": 1487.0,
+        "manualCoverageRisk": 1266,
+        "optimizedCoverageRisk": 1211,
+        "budgetHours": 1284.8,
+        "usedHours": 1070.0,
+        "budgetExceeded": false
+      },
+      "comparison": [
+        {
+          "mode": "Fixed rotation only",
+          "shortageHours": 2156.0,
+          "coverageRiskHours": 1499,
+          "waitRiskProxy": 731.1
+        },
+        {
+          "mode": "Original overflow",
+          "shortageHours": 1708.0,
+          "coverageRiskHours": 1266,
+          "waitRiskProxy": 591.5
+        },
+        {
+          "mode": "Optimized overflow",
+          "shortageHours": 1487.0,
+          "coverageRiskHours": 1211,
+          "waitRiskProxy": 582.5
+        }
+      ],
+      "roleBudgets": [
+        {
+          "role": "MD",
+          "budgetHours": 364.0,
+          "usedHours": 160.0,
+          "remainingHours": 204.0,
+          "usedPct": 44.0,
+          "overBudget": false
+        },
+        {
+          "role": "NP",
+          "budgetHours": 120.0,
+          "usedHours": 120.0,
+          "remainingHours": 0.0,
+          "usedPct": 100.0,
+          "overBudget": false
+        },
+        {
+          "role": "RN",
+          "budgetHours": 436.8,
+          "usedHours": 430.0,
+          "remainingHours": 6.8,
+          "usedPct": 98.4,
+          "overBudget": false
+        },
+        {
+          "role": "HCW",
+          "budgetHours": 364.0,
+          "usedHours": 360.0,
+          "remainingHours": 4.0,
+          "usedPct": 98.9,
+          "overBudget": false
+        }
+      ],
+      "remainingGaps": [
+        {
+          "role": "MD",
+          "remainingGapHours": 175.0,
+          "pressureHours": 171
+        },
+        {
+          "role": "NP",
+          "remainingGapHours": 49.0,
+          "pressureHours": 48
+        },
+        {
+          "role": "RN",
+          "remainingGapHours": 738.0,
+          "pressureHours": 695
+        },
+        {
+          "role": "HCW",
+          "remainingGapHours": 525.0,
+          "pressureHours": 510
+        }
+      ],
+      "topActions": [
+        {
+          "facility": "FAC_002",
+          "role": "RN",
+          "window": "Jan 25, 2 PM to Jan 26, 12 AM",
+          "priority": "P1",
+          "expectedHit": true,
+          "score": 18.08
+        },
+        {
+          "facility": "FAC_003",
+          "role": "RN",
+          "window": "Jan 25, 2 PM to Jan 26, 12 AM",
+          "priority": "P1",
+          "expectedHit": true,
+          "score": 17.77
+        },
+        {
+          "facility": "FAC_000",
+          "role": "RN",
+          "window": "Jan 13, 8 AM to Jan 13, 6 PM",
+          "priority": "P1",
+          "expectedHit": true,
+          "score": 17.37
+        },
+        {
+          "facility": "FAC_001",
+          "role": "MD",
+          "window": "Jan 23, 10 AM to Jan 23, 8 PM",
+          "priority": "P1",
+          "expectedHit": true,
+          "score": 17.26
+        },
+        {
+          "facility": "FAC_001",
+          "role": "RN",
+          "window": "Jan 20, 2 PM to Jan 21, 12 AM",
+          "priority": "P1",
+          "expectedHit": true,
+          "score": 16.25
+        },
+        {
+          "facility": "FAC_003",
+          "role": "RN",
+          "window": "Jan 30, 2 PM to Jan 31, 12 AM",
+          "priority": "P1",
+          "expectedHit": true,
+          "score": 16.25
+        },
+        {
+          "facility": "FAC_003",
+          "role": "RN",
+          "window": "Jan 21, 2 PM to Jan 22, 12 AM",
+          "priority": "P1",
+          "expectedHit": true,
+          "score": 15.58
+        },
+        {
+          "facility": "FAC_003",
+          "role": "RN",
+          "window": "Jan 25, 8 AM to Jan 25, 6 PM",
+          "priority": "P1",
+          "expectedHit": true,
+          "score": 15.29
+        }
+      ],
+      "optimizedSchedule": [
+        {
+          "facility": "FAC_001",
+          "department": "ER_FAST_TRACK",
+          "role": "NP",
+          "line": "PSP tabfm guarded 00063",
+          "start": "Jan 1, 12 PM",
+          "end": "Jan 1, 10 PM",
+          "hours": 10.0,
+          "priority": "P1",
+          "score": 10.19,
+          "status": "Add overflow"
+        },
+        {
+          "facility": "FAC_001",
+          "department": "ER_MAIN",
+          "role": "HCW",
+          "line": "PSP tabfm guarded 00065",
+          "start": "Jan 1, 2 PM",
+          "end": "Jan 2, 12 AM",
+          "hours": 10.0,
+          "priority": "P1",
+          "score": 10.13,
+          "status": "Add overflow"
+        },
+        {
+          "facility": "FAC_000",
+          "department": "ER_MAIN",
+          "role": "RN",
+          "line": "PSP tabfm guarded 00053",
+          "start": "Jan 1, 8 PM",
+          "end": "Jan 2, 6 AM",
+          "hours": 10.0,
+          "priority": "P1",
+          "score": 10.71,
+          "status": "Add overflow"
+        },
+        {
+          "facility": "FAC_003",
+          "department": "ER_MAIN",
+          "role": "MD",
+          "line": "PSP tabfm guarded 00037",
+          "start": "Jan 2, 10 AM",
+          "end": "Jan 2, 8 PM",
+          "hours": 10.0,
+          "priority": "P1",
+          "score": 12.03,
+          "status": "Add overflow"
+        },
+        {
+          "facility": "FAC_001",
+          "department": "ER_FAST_TRACK",
+          "role": "NP",
+          "line": "PSP tabfm guarded 00086",
+          "start": "Jan 2, 12 PM",
+          "end": "Jan 2, 10 PM",
+          "hours": 10.0,
+          "priority": "P1",
+          "score": 8.35,
+          "status": "Add overflow"
+        },
+        {
+          "facility": "FAC_002",
+          "department": "ER_MAIN",
+          "role": "MD",
+          "line": "PSP tabfm guarded 00070",
+          "start": "Jan 2, 2 PM",
+          "end": "Jan 3, 12 AM",
+          "hours": 10.0,
+          "priority": "P1",
+          "score": 9.98,
+          "status": "Add overflow"
+        },
+        {
+          "facility": "FAC_000",
+          "department": "ER_FAST_TRACK",
+          "role": "NP",
+          "line": "PSP tabfm guarded 00085",
+          "start": "Jan 4, 12 PM",
+          "end": "Jan 4, 10 PM",
+          "hours": 10.0,
+          "priority": "P1",
+          "score": 8.48,
+          "status": "Add overflow"
+        },
+        {
+          "facility": "FAC_003",
+          "department": "ER_MAIN",
+          "role": "HCW",
+          "line": "PSP tabfm guarded 00081",
+          "start": "Jan 4, 2 PM",
+          "end": "Jan 5, 12 AM",
+          "hours": 10.0,
+          "priority": "P1",
+          "score": 9.03,
+          "status": "Add overflow"
+        },
+        {
+          "facility": "FAC_000",
+          "department": "ER_MAIN",
+          "role": "RN",
+          "line": "PSP tabfm guarded 00074",
+          "start": "Jan 4, 8 PM",
+          "end": "Jan 5, 6 AM",
+          "hours": 10.0,
+          "priority": "P1",
+          "score": 9.78,
+          "status": "Add overflow"
+        },
+        {
+          "facility": "FAC_001",
+          "department": "ER_MAIN",
+          "role": "MD",
+          "line": "PSP tabfm guarded 00042",
+          "start": "Jan 5, 10 AM",
+          "end": "Jan 5, 8 PM",
+          "hours": 10.0,
+          "priority": "P1",
+          "score": 11.92,
+          "status": "Add overflow"
+        },
+        {
+          "facility": "FAC_001",
+          "department": "ER_MAIN",
+          "role": "HCW",
+          "line": "PSP tabfm guarded 00084",
+          "start": "Jan 6, 8 AM",
+          "end": "Jan 6, 6 PM",
+          "hours": 10.0,
+          "priority": "P1",
+          "score": 8.57,
+          "status": "Add overflow"
+        },
+        {
+          "facility": "FAC_003",
+          "department": "ER_MAIN",
+          "role": "RN",
+          "line": "PSP tabfm guarded 00019",
+          "start": "Jan 10, 8 AM",
+          "end": "Jan 10, 6 PM",
+          "hours": 10.0,
+          "priority": "P1",
+          "score": 13.17,
+          "status": "Add overflow"
+        },
+        {
+          "facility": "FAC_003",
+          "department": "ER_MAIN",
+          "role": "HCW",
+          "line": "PSP tabfm guarded 00095",
+          "start": "Jan 10, 2 PM",
+          "end": "Jan 11, 12 AM",
+          "hours": 10.0,
+          "priority": "P2",
+          "score": 7.14,
+          "status": "Add overflow"
+        },
+        {
+          "facility": "FAC_000",
+          "department": "ER_MAIN",
+          "role": "HCW",
+          "line": "PSP tabfm guarded 00099",
+          "start": "Jan 11, 8 AM",
+          "end": "Jan 11, 6 PM",
+          "hours": 10.0,
+          "priority": "P2",
+          "score": 6.55,
+          "status": "Add overflow"
+        },
+        {
+          "facility": "FAC_003",
+          "department": "ER_MAIN",
+          "role": "RN",
+          "line": "PSP tabfm guarded 00033",
+          "start": "Jan 11, 8 AM",
+          "end": "Jan 11, 6 PM",
+          "hours": 10.0,
+          "priority": "P1",
+          "score": 12.32,
+          "status": "Add overflow"
+        },
+        {
+          "facility": "FAC_001",
+          "department": "ER_MAIN",
+          "role": "MD",
+          "line": "PSP tabfm guarded 00061",
+          "start": "Jan 11, 10 AM",
+          "end": "Jan 11, 8 PM",
+          "hours": 10.0,
+          "priority": "P1",
+          "score": 10.21,
+          "status": "Add overflow"
+        }
+      ]
+    },
+    {
+      "label": "severe",
+      "pressureMultiplier": 1.6,
+      "pressureRegime": "surge",
+      "scenario": "tabfm_guarded",
+      "preOverflowGapHours": 8210.0,
+      "slackPctByRole": {
+        "MD": 0.0,
+        "NP": 0.0,
+        "RN": 0.0,
+        "HCW": 0.0
+      },
+      "kpis": {
+        "shortageAvoided": -21.0,
+        "coverageRiskAvoided": -28.0,
+        "waitRiskReduced": 6.5,
+        "manualShortage": 7141.0,
+        "optimizedShortage": 7162.0,
+        "manualCoverageRisk": 2691,
+        "optimizedCoverageRisk": 2719,
+        "budgetHours": 1284.8,
+        "usedHours": 1270.0,
+        "budgetExceeded": false
+      },
+      "comparison": [
+        {
+          "mode": "Fixed rotation only",
+          "shortageHours": 8210.0,
+          "coverageRiskHours": 2760,
+          "waitRiskProxy": 1092.3
+        },
+        {
+          "mode": "Original overflow",
+          "shortageHours": 7141.0,
+          "coverageRiskHours": 2691,
+          "waitRiskProxy": 1067.5
+        },
+        {
+          "mode": "Optimized overflow",
+          "shortageHours": 7162.0,
+          "coverageRiskHours": 2719,
+          "waitRiskProxy": 1061.1
+        }
+      ],
+      "roleBudgets": [
+        {
+          "role": "MD",
+          "budgetHours": 364.0,
+          "usedHours": 360.0,
+          "remainingHours": 4.0,
+          "usedPct": 98.9,
+          "overBudget": false
+        },
+        {
+          "role": "NP",
+          "budgetHours": 120.0,
+          "usedHours": 120.0,
+          "remainingHours": 0.0,
+          "usedPct": 100.0,
+          "overBudget": false
+        },
+        {
+          "role": "RN",
+          "budgetHours": 436.8,
+          "usedHours": 430.0,
+          "remainingHours": 6.8,
+          "usedPct": 98.4,
+          "overBudget": false
+        },
+        {
+          "role": "HCW",
+          "budgetHours": 364.0,
+          "usedHours": 360.0,
+          "remainingHours": 4.0,
+          "usedPct": 98.9,
+          "overBudget": false
+        }
+      ],
+      "remainingGaps": [
+        {
+          "role": "MD",
+          "remainingGapHours": 1044.0,
+          "pressureHours": 946
+        },
+        {
+          "role": "NP",
+          "remainingGapHours": 327.0,
+          "pressureHours": 307
+        },
+        {
+          "role": "RN",
+          "remainingGapHours": 3313.0,
+          "pressureHours": 2240
+        },
+        {
+          "role": "HCW",
+          "remainingGapHours": 2478.0,
+          "pressureHours": 1868
+        }
+      ],
+      "topActions": [
+        {
+          "facility": "FAC_003",
+          "role": "MD",
+          "window": "Jan 12, 2 PM to Jan 13, 12 AM",
+          "priority": "P1",
+          "expectedHit": true,
+          "score": 25.91
+        },
+        {
+          "facility": "FAC_003",
+          "role": "MD",
+          "window": "Jan 12, 10 AM to Jan 12, 8 PM",
+          "priority": "P1",
+          "expectedHit": true,
+          "score": 24.52
+        },
+        {
+          "facility": "FAC_001",
+          "role": "RN",
+          "window": "Jan 25, 8 AM to Jan 25, 6 PM",
+          "priority": "P1",
+          "expectedHit": true,
+          "score": 24.22
+        },
+        {
+          "facility": "FAC_003",
+          "role": "MD",
+          "window": "Jan 29, 2 PM to Jan 30, 12 AM",
+          "priority": "P1",
+          "expectedHit": true,
+          "score": 23.61
+        },
+        {
+          "facility": "FAC_003",
+          "role": "RN",
+          "window": "Jan 21, 2 PM to Jan 22, 12 AM",
+          "priority": "P1",
+          "expectedHit": true,
+          "score": 23.47
+        },
+        {
+          "facility": "FAC_001",
+          "role": "RN",
+          "window": "Jan 25, 2 PM to Jan 26, 12 AM",
+          "priority": "P1",
+          "expectedHit": true,
+          "score": 23.17
+        },
+        {
+          "facility": "FAC_000",
+          "role": "RN",
+          "window": "Jan 21, 2 PM to Jan 22, 12 AM",
+          "priority": "P1",
+          "expectedHit": true,
+          "score": 23.07
+        },
+        {
+          "facility": "FAC_001",
+          "role": "MD",
+          "window": "Jan 25, 10 AM to Jan 25, 8 PM",
+          "priority": "P1",
+          "expectedHit": true,
+          "score": 23.05
+        }
+      ],
+      "optimizedSchedule": [
+        {
+          "facility": "FAC_003",
+          "department": "ER_MAIN",
+          "role": "MD",
+          "line": "PSP tabfm guarded 00084",
+          "start": "Jan 1, 2 PM",
+          "end": "Jan 2, 12 AM",
+          "hours": 10.0,
+          "priority": "P1",
+          "score": 19.02,
+          "status": "Add overflow"
+        },
+        {
+          "facility": "FAC_001",
+          "department": "ER_MAIN",
+          "role": "RN",
+          "line": "PSP tabfm guarded 00051",
+          "start": "Jan 4, 8 AM",
+          "end": "Jan 4, 6 PM",
+          "hours": 10.0,
+          "priority": "P1",
+          "score": 21.14,
+          "status": "Add overflow"
+        },
+        {
+          "facility": "FAC_002",
+          "department": "ER_MAIN",
+          "role": "HCW",
+          "line": "PSP tabfm guarded 00108",
+          "start": "Jan 5, 8 AM",
+          "end": "Jan 5, 6 PM",
+          "hours": 10.0,
+          "priority": "P1",
+          "score": 17.52,
+          "status": "Add overflow"
+        },
+        {
+          "facility": "FAC_003",
+          "department": "ER_MAIN",
+          "role": "RN",
+          "line": "PSP tabfm guarded 00046",
+          "start": "Jan 10, 2 PM",
+          "end": "Jan 11, 12 AM",
+          "hours": 10.0,
+          "priority": "P1",
+          "score": 21.28,
+          "status": "Add overflow"
+        },
+        {
+          "facility": "FAC_003",
+          "department": "ER_MAIN",
+          "role": "RN",
+          "line": "PSP tabfm guarded 00039",
+          "start": "Jan 10, 8 PM",
+          "end": "Jan 11, 6 AM",
+          "hours": 10.0,
+          "priority": "P1",
+          "score": 21.53,
+          "status": "Add overflow"
+        },
+        {
+          "facility": "FAC_000",
+          "department": "ER_MAIN",
+          "role": "HCW",
+          "line": "PSP tabfm guarded 00113",
+          "start": "Jan 11, 8 AM",
+          "end": "Jan 11, 6 PM",
+          "hours": 10.0,
+          "priority": "P1",
+          "score": 17.18,
+          "status": "Add overflow"
+        },
+        {
+          "facility": "FAC_001",
+          "department": "ER_MAIN",
+          "role": "HCW",
+          "line": "PSP tabfm guarded 00107",
+          "start": "Jan 11, 8 AM",
+          "end": "Jan 11, 6 PM",
+          "hours": 10.0,
+          "priority": "P1",
+          "score": 17.64,
+          "status": "Add overflow"
+        },
+        {
+          "facility": "FAC_003",
+          "department": "ER_MAIN",
+          "role": "HCW",
+          "line": "PSP tabfm guarded 00091",
+          "start": "Jan 11, 8 AM",
+          "end": "Jan 11, 6 PM",
+          "hours": 10.0,
+          "priority": "P1",
+          "score": 18.75,
+          "status": "Add overflow"
+        },
+        {
+          "facility": "FAC_003",
+          "department": "ER_MAIN",
+          "role": "RN",
+          "line": "PSP tabfm guarded 00029",
+          "start": "Jan 11, 8 AM",
+          "end": "Jan 11, 6 PM",
+          "hours": 10.0,
+          "priority": "P1",
+          "score": 21.75,
+          "status": "Add overflow"
+        },
+        {
+          "facility": "FAC_002",
+          "department": "ER_MAIN",
+          "role": "MD",
+          "line": "PSP tabfm guarded 00022",
+          "start": "Jan 11, 10 AM",
+          "end": "Jan 11, 8 PM",
+          "hours": 10.0,
+          "priority": "P1",
+          "score": 21.94,
+          "status": "Add overflow"
+        },
+        {
+          "facility": "FAC_001",
+          "department": "ER_FAST_TRACK",
+          "role": "NP",
+          "line": "PSP tabfm guarded 00125",
+          "start": "Jan 11, 12 PM",
+          "end": "Jan 11, 10 PM",
+          "hours": 10.0,
+          "priority": "P1",
+          "score": 11.37,
+          "status": "Add overflow"
+        },
+        {
+          "facility": "FAC_000",
+          "department": "ER_MAIN",
+          "role": "HCW",
+          "line": "PSP tabfm guarded 00074",
+          "start": "Jan 11, 2 PM",
+          "end": "Jan 12, 12 AM",
+          "hours": 10.0,
+          "priority": "P1",
+          "score": 19.55,
+          "status": "Add overflow"
+        },
+        {
+          "facility": "FAC_001",
+          "department": "ER_MAIN",
+          "role": "HCW",
+          "line": "PSP tabfm guarded 00104",
+          "start": "Jan 11, 2 PM",
+          "end": "Jan 12, 12 AM",
+          "hours": 10.0,
+          "priority": "P1",
+          "score": 17.85,
+          "status": "Add overflow"
+        },
+        {
+          "facility": "FAC_001",
+          "department": "ER_MAIN",
+          "role": "MD",
+          "line": "PSP tabfm guarded 00090",
+          "start": "Jan 11, 2 PM",
+          "end": "Jan 12, 12 AM",
+          "hours": 10.0,
+          "priority": "P1",
+          "score": 18.76,
+          "status": "Add overflow"
+        },
+        {
+          "facility": "FAC_001",
+          "department": "ER_MAIN",
+          "role": "RN",
+          "line": "PSP tabfm guarded 00013",
+          "start": "Jan 11, 2 PM",
+          "end": "Jan 12, 12 AM",
+          "hours": 10.0,
+          "priority": "P1",
+          "score": 22.56,
+          "status": "Add overflow"
+        },
+        {
+          "facility": "FAC_003",
+          "department": "ER_MAIN",
+          "role": "RN",
+          "line": "PSP tabfm guarded 00012",
+          "start": "Jan 11, 2 PM",
+          "end": "Jan 12, 12 AM",
+          "hours": 10.0,
+          "priority": "P1",
+          "score": 22.58,
+          "status": "Add overflow"
+        }
+      ]
+    }
+  ],
   "plainLanguage": {
     "problem": "The standing schedule is protected. The business case is whether funded overflow can be placed earlier and more precisely.",
     "manual": "Original call-outs react after visible pressure appears, which can miss the right role, site, or hour.",
