@@ -100,7 +100,11 @@ h2 {
   text-decoration: none;
 }
 
-.top-status a {
+.top-status a,
+.top-status a:visited,
+.top-status a:hover,
+.top-status a:focus,
+.top-status a:active {
   color: #ffffff;
 }
 

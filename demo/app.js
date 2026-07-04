@@ -48,10 +48,16 @@ function simulateScenario(data, params) {
   const riskAvoided = Math.min(data.comparison[1].coverageRiskHours * pressureFactor * 0.9, Math.max(0, riskAvoidedBase * coverageFactor * Math.sqrt(pressureFactor)));
   const budgetHours = base.baseBudgetHours * budgetFactor;
   const calloutFactor = Math.max(0.72, Math.min(1.22, Math.sqrt(base.minimumCoveredGapHours / params.minGap)));
-  const neededHours = base.baseUsedHours * pressureFactor * calloutFactor * shiftFactor;
+  const shiftUseFactor = Math.max(0.86, Math.min(1.12, 0.92 + 0.08 * shiftFactor));
+  const spareBudgetFactor = Math.max(1.0, Math.min(1.18, Math.sqrt(budgetFactor)));
+  const neededHours = base.baseUsedHours * pressureFactor * calloutFactor * shiftUseFactor * spareBudgetFactor;
   const usedHours = Math.min(neededHours, budgetHours);
   const optimizedShortage = Math.max(0, manualShortage - shortageAvoided);
-  const gapMultiplier = Math.max(0.18, Math.min(2.4, Math.pow(pressureFactor, 1.25) / Math.max(0.45, coverageFactor)));
+  const capacityUseFactor = usedHours / Math.max(1, base.baseUsedHours * pressureFactor);
+  const gapMultiplier = Math.max(
+    0.08,
+    Math.min(2.4, Math.pow(pressureFactor, 1.25) / Math.max(0.55, coverageFactor * Math.sqrt(Math.max(0.55, capacityUseFactor)))),
+  );
   const constrainedAndWeak = usedHours >= budgetHours * 0.98 && shortageAvoided < shortageAvoidedBase * 0.85;
   const status = !constrainedAndWeak && shortageAvoided > shortageAvoidedBase * 0.55 ? "Ready" : "Review";
   return { shortageAvoided, riskAvoided, usedHours, budgetHours, optimizedShortage, status, gapMultiplier };
