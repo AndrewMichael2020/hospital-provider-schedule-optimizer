@@ -37,18 +37,24 @@ function simulateScenario(data, params) {
   const base = data.parameters;
   const budgetFactor = params.budgetPct / base.overflowBudgetPct;
   const pressureFactor = params.pressure / base.surgeMultiplier;
-  const selectivityFactor = base.minimumCoveredGapHours / params.minGap;
+  const selectivityFactor = Math.max(0.68, Math.min(1.18, Math.sqrt(base.minimumCoveredGapHours / params.minGap)));
   const shiftFactor = params.shiftHours / base.overflowShiftHours;
-  const efficiency = Math.max(0.55, Math.min(1.2, budgetFactor * selectivityFactor * (1 / Math.sqrt(pressureFactor))));
+  const shiftCoverageFactor = Math.max(0.72, Math.min(1.12, Math.sqrt(shiftFactor)));
+  const coverageFactor = Math.max(0.35, Math.min(1.35, Math.pow(budgetFactor, 0.72) * selectivityFactor * shiftCoverageFactor));
   const shortageAvoidedBase = Number(data.kpis[0].value);
   const riskAvoidedBase = Number(data.kpis[1].value);
-  const shortageAvoided = Math.max(0, shortageAvoidedBase * efficiency);
-  const riskAvoided = Math.max(0, riskAvoidedBase * efficiency);
-  const usedHours = Math.min(base.baseUsedHours * budgetFactor * shiftFactor, base.baseBudgetHours * budgetFactor);
+  const manualShortage = base.baselineManualShortageHours * pressureFactor;
+  const shortageAvoided = Math.min(manualShortage * 0.86, Math.max(0, shortageAvoidedBase * coverageFactor * Math.sqrt(pressureFactor)));
+  const riskAvoided = Math.min(data.comparison[1].coverageRiskHours * pressureFactor * 0.9, Math.max(0, riskAvoidedBase * coverageFactor * Math.sqrt(pressureFactor)));
   const budgetHours = base.baseBudgetHours * budgetFactor;
-  const optimizedShortage = Math.max(0, base.baselineManualShortageHours - shortageAvoided);
-  const status = usedHours <= budgetHours && shortageAvoided > shortageAvoidedBase * 0.65 ? "Ready" : "Review";
-  return { shortageAvoided, riskAvoided, usedHours, budgetHours, optimizedShortage, status };
+  const calloutFactor = Math.max(0.72, Math.min(1.22, Math.sqrt(base.minimumCoveredGapHours / params.minGap)));
+  const neededHours = base.baseUsedHours * pressureFactor * calloutFactor * shiftFactor;
+  const usedHours = Math.min(neededHours, budgetHours);
+  const optimizedShortage = Math.max(0, manualShortage - shortageAvoided);
+  const gapMultiplier = Math.max(0.18, Math.min(2.4, Math.pow(pressureFactor, 1.25) / Math.max(0.45, coverageFactor)));
+  const constrainedAndWeak = usedHours >= budgetHours * 0.98 && shortageAvoided < shortageAvoidedBase * 0.85;
+  const status = !constrainedAndWeak && shortageAvoided > shortageAvoidedBase * 0.55 ? "Ready" : "Review";
+  return { shortageAvoided, riskAvoided, usedHours, budgetHours, optimizedShortage, status, gapMultiplier };
 }
 
 function renderMetrics(data, scenario) {
@@ -110,11 +116,12 @@ function renderComparison(data, scenario) {
 }
 
 function renderBudgets(data, scenario) {
-  const scale = scenario.budgetHours / data.parameters.baseBudgetHours;
+  const budgetScale = scenario.budgetHours / data.parameters.baseBudgetHours;
+  const usedScale = scenario.usedHours / data.parameters.baseUsedHours;
   byId("budget-chart").innerHTML = data.roleBudgets
     .map((item) => {
-      const budget = item.budgetHours * scale;
-      const used = Math.min(item.usedHours * scale, budget);
+      const budget = item.budgetHours * budgetScale;
+      const used = Math.min(item.usedHours * usedScale, budget);
       const usedPct = (used / Math.max(1, budget)) * 100;
       return `<div class="meter">
         <div class="meter__top"><strong>${item.role}</strong><span>${fmt.format(used)} / ${fmt.format(budget)}h</span></div>
@@ -125,10 +132,9 @@ function renderBudgets(data, scenario) {
 }
 
 function renderGaps(data, scenario) {
-  const improvementFactor = scenario.shortageAvoided / Math.max(1, Number(data.kpis[0].value));
   const adjusted = data.remainingGaps.map((item) => ({
     ...item,
-    remainingGapHours: Math.max(0, item.remainingGapHours * (1.15 - Math.min(1.05, improvementFactor))),
+    remainingGapHours: Math.max(0, item.remainingGapHours * scenario.gapMultiplier),
   }));
   const max = maxOf(adjusted, ["remainingGapHours"]);
   byId("gaps-chart").innerHTML = adjusted
@@ -137,8 +143,8 @@ function renderGaps(data, scenario) {
       return `<article class="gap-card">
         <strong>${item.role}</strong>
         <div class="bar-track"><b style="width:${width}%"></b></div>
-        <span>${fmt.format(item.remainingGapHours)} gap hours</span>
-        <small>${item.pressureHours} pressure hours</small>
+        <span>${fmt.format(item.remainingGapHours)} uncovered role-hours</span>
+        <small>${item.pressureHours} hours with a remaining gap</small>
       </article>`;
     })
     .join("");
