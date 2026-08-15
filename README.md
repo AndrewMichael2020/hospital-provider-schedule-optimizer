@@ -2,12 +2,12 @@
 
 
 <p align="center">
+  <a href="https://github.com/AndrewMichael2020/hospital-provider-schedule-optimizer/actions/workflows/pages.yml"><img alt="Pages deployment" src="https://github.com/AndrewMichael2020/hospital-provider-schedule-optimizer/actions/workflows/pages.yml/badge.svg"></a>
   <img alt="Python 3.11+" src="https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white">
-  <img alt="Tests included" src="https://img.shields.io/badge/tests-included-2ea44f">
   <img alt="No PHI synthetic data" src="https://img.shields.io/badge/data-synthetic%20%7C%20no%20PHI-0f766e">
   <img alt="Role aware optimization" src="https://img.shields.io/badge/optimizer-role--aware-7c3aed">
   <img alt="Budget guardrails" src="https://img.shields.io/badge/budget-guardrails-f59e0b">
-  <img alt="License MIT" src="https://img.shields.io/badge/license-MIT-blue">
+  <a href="./LICENSE"><img alt="License MIT" src="https://img.shields.io/badge/license-MIT-blue"></a>
 </p>
 
 <p align="center"><strong>Safety-first ER workforce optimization with fixed rotations, role-specific demand, and funded overflow guardrails.</strong></p>
